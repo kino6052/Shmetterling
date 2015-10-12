@@ -1,0 +1,97 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800|Roboto:400,100,300,700);
+body {
+    font-family: "Roboto"!;
+	font-size: 22px;
+    background-color: #3d2862;
+    background-image: url("http://www.publicdomainpictures.net/download-picture.php?adresar=20000&soubor=butterfly-tree-20851296160997heS.jpg");
+    background-size: cover;
+}
+
+/*Header*/
+.panel-default>.panel-heading {
+    background-color: #c3f666;
+    color: #3d2862;
+}
+.panel-body {
+    background-color: #3d2862;
+}
+.navbar {
+    background-color: #c3f666;
+}
+#search {
+    margin-top: 10px;
+}
+/*Main*/
+
+
+.content {
+    margin-top: 60px;
+}
+
+iframe, #player {
+
+    padding: 20px 5px 10px 5px;
+    text-align: center;
+    width: 100%;
+}
+/*Small*/
+@media (max-width: 767px) {
+    iframe, #player {
+        height: 310px;
+    }
+    #searchfield {
+        margin-left: 10px;
+    }
+    .page {
+        height: 410px;
+    }
+} 
+@media (min-width: 768px) and (max-width: 1199px) {
+    iframe, #player {
+        height: 520px;
+    }
+    .page {
+        height: 620px;
+    }
+} 
+@media (min-width: 1200px) {
+    iframe, #player {
+        height: 740px;
+    }
+    .page {
+        height: 840px;
+    }
+} 
+
+/*Footer*/
+
+
+footer {
+  background-color: rgba(0,0,0,0.7);
+  position: relative;
+  height: 250px;
+  clear:both;
+  padding-top:20px;
+} 
+
+footer p {
+    color: #c3f666;;
+}
+#frameHolder {
+    background-color: rgba(0,0,0,0.9);
+    border-radius: 5px;
+    color: white;
+}
+#innerContent {
+    z-index: 999999;
+    position: absolute;
+}
+
+#controls {
+    margin: 0 auto 10px auto;
+    width: 50%;
+    text-align: center;
+}
+#submit {
+    margin: 8px;
+}
