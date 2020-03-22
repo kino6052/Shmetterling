@@ -1,0 +1,25 @@
+{
+  "name": "shmetterling",
+  "version": "1.0.0",
+  "description": "YouTube meets Spotify",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kino6052/Shmetterling.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kino6052/Shmetterling/issues"
+  },
+  "homepage": "https://github.com/kino6052/Shmetterling#readme",
+  "dependencies": {
+    "btoa": "^1.2.1",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
+    "rxjs": "^6.5.4"
+  }
+}
