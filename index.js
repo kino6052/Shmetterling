@@ -1,21 +1,19 @@
 const fetch = require('node-fetch');
 const btoa = require('btoa');
 const express = require('express');
-
 const { BehaviorSubject } = require('rxjs');
 
 const app = express();
 
+app.use('/', express.static('.'))
 
-app.use('/', express.static('.'));
+app.listen('8080', () => console.warn('App is listening'))
 
-app.listen('8080', () => console.warn('App is listening'));
+const SPOTIFY_AUTH = `Basic ${btoa("ca5e86225bcf4416b89dbf42fbc4e8a0:5894a1705f8046919e96c8130440ed80")}`
 
-const base64 = `Basic ${btoa("ca5e86225bcf4416b89dbf42fbc4e8a0:5894a1705f8046919e96c8130440ed80")}`;
-console.warn(base64)
-const updateToken = () => {
+const MUSIC_VIDEO_AUTH = 'y261ObFJtcoav1XFteSZ1elCZfQeMwq1TBjH6enk'
 
-}
+console.warn(SPOTIFY_AUTH)
 
 const AccessTokenSubject = new BehaviorSubject(undefined);
 
@@ -26,7 +24,7 @@ const getNewToken = async () => {
     body: "grant_type=client_credentials",
     headers: {
       "Content-Type": 'application/x-www-form-urlencoded',
-      Authorization: base64,
+      Authorization: SPOTIFY_AUTH,
       Accept: 'application/json'
     }
   })
@@ -69,11 +67,89 @@ const getRelatedArtists = async (artistId) => {
   return artists.map(({ id, name }) => ({ id, name }))
 }
 
+const getMusicVideos = async (artistName) => {
+  const { results = [] } = await fetch(`http://imvdb.com/api/v1/search/videos?q=${artistName}`, {
+    headers: {
+      "IMVDB-APP-KEY": MUSIC_VIDEO_AUTH,
+      Accept: 'application/json'
+    }
+  }).then(res => res.json())
+  const songs = results.map(({ id, artists: [ { name, slug } ] }) => ({id, name, slug})).filter(({ name = "" }) => name.toLowerCase() === artistName.toLowerCase());
+  return songs;
+}
+
+const getArtistsMusicVideoId = async (artistName) => {
+  console.warn('Get Artists Music Videos', artistName)
+  const songs = getMusicVideos();
+  const r = [];
+  for (let i = 0; i < 2; i++) {
+    const musicVideo = await getYouTubeUrlForVideo(songs[i].id);
+    if (musicVideo && musicVideo.length) r.push(musicVideo);
+  }
+  return r;
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+const getYouTubeUrlForVideo = async (videoId) => {
+  console.warn(videoId)
+  const response = await fetch(`http://imvdb.com/api/v1/video/${videoId}?include=sources`, {
+    headers: {
+      "IMVDB-APP-KEY": MUSIC_VIDEO_AUTH,
+      Accept: 'application/json'
+    }
+  }).then(res => res.json())
+  const { sources } = response;
+  const filtered = sources.filter(({ source }) => source === 'youtube').map(({ source_data }) => `https://youtube.com/v/${source_data}`)
+  // const songs = results.map(({ id, artists: [ { name, slug } ] }) => ({id, name, slug})).filter(({ name = "" }) => name.toLowerCase() === artistName.toLowerCase());
+  return filtered;
+}
+
+const getArtistQuery = (req) => {
+  const { query: { artist = '' } = {} } = req;
+  return artist;
+}
+
+const getMusicVideoId = (req) => {
+  const { query: { id = '' } = {} } = req;
+  return id;
+}
+
 app.get('/artist', async (req, res) => {
-  const { name, id } = await searchArtist('the cure');
-  const result = [{ name, id }, ...await getRelatedArtists(id)]
-  res.send(result)
+  const artist = getArtistQuery(req);
+  const { name, id } = await searchArtist(artist);
+  const artists = [{ name, id }, ...await getRelatedArtists(id)]
+  let result = [];
+  for (let i = 0; i < artists.length; i++) {
+    const musicVideos = await getMusicVideos(artists[i].name);
+    result = [...result, ...musicVideos];
+  }
+  res.send(shuffle(result))
 })
+
+app.get('/link', async (req, res) => {
+  const musicVideoId = getMusicVideoId(req)
+  const [url] = await getYouTubeUrlForVideo(musicVideoId)
+  res.send(url)
+})
+
 
 // ca5e86225bcf4416b89dbf42fbc4e8a0
 // 5894a1705f8046919e96c8130440ed80

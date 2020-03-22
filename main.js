@@ -7,6 +7,7 @@
 /*
 *	Global Variables
 */
+let playList = [];
 var globalPlayer;
 var newContent = false;
 /*
@@ -46,8 +47,10 @@ function main(){
 	var artistsInstance = {};
 	var playlistInstance = new playlist();
 	var playerInstance = new player();
+	playerInstance.init();
 	var artistCounter = 0; // counts events to be eqaul to the number of artists 
-	
+
+
 	// Events	
 	$(document).bind('similarArtistsUrlUpdated', function(){
 		console.log('TEST PASSED (similarArtistsUrlUpdated): [' + artistsInstance.similarArtistsUrl + "]");
@@ -118,10 +121,9 @@ var player = function(){
 	return {
 		playlist: {},
 		index: 0, 
-		init: function(instance, playlistInput) {
+		init: function(instance) {
 			// Loads first video and creates listeners that check whether video ended
-			this.playlist = playlistInput;
-			createPlayer(this.playlist.songIdList[this.index]);
+			createPlayer() //this.playlist.songIdList[this.index]);
 			
 			$(document).bind('videoEnded', function(eventData){
 				console.log('TEST PASSED (videoEnded):');
@@ -129,12 +131,19 @@ var player = function(){
 			});
 		},
 		getNext: function(){
-			this.index = (this.index + 1) % this.playlist.songIdList.length;
-			globalPlayer.loadVideoById(this.playlist.songIdList[this.index]);
+			this.index = (this.index + 1) % playList.length;
+			fetch(`/link?id=${playList[this.index]}`).then(res => res.text()).then(link => {
+				console.warn(link);
+    		globalPlayer.loadVideoByUrl(link);
+			})
 		},
 		getPrev: function(){
-			this.index = (this.index - 1 == -1)?this.playlist.songIdList.length-1:this.index-1;
-			globalPlayer.loadVideoById(this.playlist.songIdList[this.index]);
+			const l = playList.length;
+			this.index = (this.index - 1 == -1)?l-1:this.index-1;
+			fetch(`/link?id=${playList[this.index]}`).then(res => res.text()).then(link => {
+				console.warn(link);
+    		globalPlayer.loadVideoByUrl(link);
+			})
 		}
 	};
 }
@@ -152,39 +161,43 @@ var playlist = function(){
 		},
 		addSongsByArtist: function(instance, artist){ // passing instance by reference
 			// creating event for updating test var
-			$.ajax({  
-               type: "GET",  
-               url: "https://www.googleapis.com/youtube/v3/search",   
-               dataType: "json",
-			   data: {
-				   part: 'snippet',
-				   q: 'intitle:"' + String(artist) + '","music video", video', 
-				   orderby: 'viewCount', 
-				   hd: "true",
-				   licence: "youtube",
-				   key: 'AIzaSyDYhXuJLy-9JbQrnGL3Wm8IeqB7_2a3rUM',
-				   maxResults: 15,
-				   alt: 'json'
-				   },
-               success: 
-                   function(data){
-                       console.log(data);
-					   $.each(data.items, function(object){
-						   if (data.items[object].id.kind == "youtube#video"){
-							   var songId = data.items[object].id.videoId;
-							    instance.addSong(songId);
-							}
-					   });   
+			// fetch(`/artist?artist=${artist}`).then(res = res.json()).then(playlist => {
+			// 	console.warn(playlist);
+			// 	playList = playlist.map(({ id }) => id);
+			// })
+			// $.ajax({  
+      //          type: "GET",  
+      //          url: "https://www.googleapis.com/youtube/v3/search",   
+      //          dataType: "json",
+			//    data: {
+			// 	   part: 'snippet',
+			// 	   q: 'intitle:"' + String(artist) + '","music video", video', 
+			// 	   orderby: 'viewCount', 
+			// 	   hd: "true",
+			// 	   licence: "youtube",
+			// 	   key: 'AIzaSyDYhXuJLy-9JbQrnGL3Wm8IeqB7_2a3rUM',
+			// 	   maxResults: 15,
+			// 	   alt: 'json'
+			// 	   },
+      //          success: 
+      //              function(data){
+      //                  console.log(data);
+			// 		   $.each(data.items, function(object){
+			// 			   if (data.items[object].id.kind == "youtube#video"){
+			// 				   var songId = data.items[object].id.videoId;
+			// 				    instance.addSong(songId);
+			// 				}
+			// 		   });   
                        
-					   instance.testVar = instance.songIdList;
-					   var songIdListUpdated = $.Event('songIdListUpdated')
-					   $(document).trigger(songIdListUpdated);
+			// 		   instance.testVar = instance.songIdList;
+			// 		   var songIdListUpdated = $.Event('songIdListUpdated')
+			// 		   $(document).trigger(songIdListUpdated);
 					   
-                    },  
-                failure: function () {
-                    songList = null; // Or however you want to flag failure
-                }
-            });
+      //               },  
+      //           failure: function () {
+      //               songList = null; // Or however you want to flag failure
+      //           }
+      //       });
 		},
 		shuffle: function(){
 			 for (var i = this.songIdList.length - 1; i > 0; i--) {
@@ -263,27 +276,32 @@ var artists = function(favoriteArtistInput){
 		findSimilarArtists: function(instance, favoriteArtist){
 			// void; displays content of the artistsList and adds even listener to the button
 			var similarArtistsUrlUpdated = $.Event('similarArtistsUrlUpdated');
-			$.ajax({  
-			   type: "GET",  
-			   url: "https://ws.spotify.com/search/1/artist.json",
-			   data: {q: String(favoriteArtist)},
-			   dataType: "json",  
-			   success: 
-				   function(data){
+			fetch(`/artist?artist=${favoriteArtist}`).then(res => res.json()).then(playlist => {
+				console.warn(playlist);
+				playList = playlist.map(({ id }) => id);
+				console.warn(playList);
+			})
+			// $.ajax({  
+			//    type: "GET",  
+			//    url: "https://ws.spotify.com/search/1/artist.json",
+			//    data: {q: String(favoriteArtist)},
+			//    dataType: "json",  
+			//    success: 
+			// 	   function(data){
 					   
-					   var hrefLink = data.artists[0].href;
-					   artistID = hrefLink.substring(15,hrefLink.length);
-					   artistName = data.artists[0].name;
-					   query = "https://api.spotify.com/v1/artists/" + artistID + "/related-artists";
-					   instance.similarArtistsUrl = query;
-					   $(document).trigger(similarArtistsUrlUpdated);
-					},  
-				failure: function () {
-					query = null; // Or however you want to flag failure
-					instance.similarArtistsUrl = query;
-					$(document).trigger(similarArtistsUrlUpdated);
-				}
-			});
+			// 		   var hrefLink = data.artists[0].href;
+			// 		   artistID = hrefLink.substring(15,hrefLink.length);
+			// 		   artistName = data.artists[0].name;
+			// 		   query = "https://api.spotify.com/v1/artists/" + artistID + "/related-artists";
+			// 		   instance.similarArtistsUrl = query;
+			// 		   $(document).trigger(similarArtistsUrlUpdated);
+			// 		},  
+			// 	failure: function () {
+			// 		query = null; // Or however you want to flag failure
+			// 		instance.similarArtistsUrl = query;
+			// 		$(document).trigger(similarArtistsUrlUpdated);
+			// 	}
+			// });
 		},
 		checklist: function(instance){
 			this.artistsList = [];
@@ -401,11 +419,12 @@ function checkboxHtml(value){ return "<div class='col-xs-8'><input type='checkbo
 // 3. This function creates an <iframe> (and YouTube player)
 //    after the API code downloads.
 
-function createPlayer(songId) {
+function createPlayer() {
+	console.warn('create player')
+	console.warn(YT, YT.Player);
 	globalPlayer = new YT.Player('player', {
 	  height: '390',
 	  width: '640',
-	  videoId: songId,
 	  events: {
 		'onReady': onPlayerReady,
 		'onStateChange': onPlayerStateChange
@@ -420,10 +439,12 @@ function createPlayer(songId) {
 var playlistCreated = new Event('playlistCreated');
 
 
-
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
-	event.target.playVideo();
+	console.warn('player ready')
+	event.target.cueVideoById({
+    videoId: 'mcUza_wWCfA'
+  });
 	$(document).trigger($.Event('playerInstantiated'));
 }
 
@@ -432,6 +453,7 @@ function onPlayerReady(event) {
 //    the player should play for six seconds and then stop.
 
 function onPlayerStateChange(event) {
+		console.warn('player changed')
 	if (newContent){
 		$(document).trigger($.Event('playerInstantiated'));
 		newContent = false;
@@ -443,5 +465,6 @@ function onPlayerStateChange(event) {
 }
 
 $(document).ready(function(){
-	main();
+	setTimeout(main, 1000);
+	// main();
 });
