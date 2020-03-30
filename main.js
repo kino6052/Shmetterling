@@ -134,7 +134,7 @@ var player = function(){
 			this.index = (this.index + 1) % playList.length;
 			fetch(`/link?id=${playList[this.index]}`).then(res => res.text()).then(link => {
 				console.warn(link);
-    		globalPlayer.loadVideoByUrl(link);
+    		globalPlayer.loadVideoById(link);
 			})
 		},
 		getPrev: function(){
@@ -142,7 +142,7 @@ var player = function(){
 			this.index = (this.index - 1 == -1)?l-1:this.index-1;
 			fetch(`/link?id=${playList[this.index]}`).then(res => res.text()).then(link => {
 				console.warn(link);
-    		globalPlayer.loadVideoByUrl(link);
+    		globalPlayer.loadVideoById(link);
 			})
 		}
 	};
@@ -276,9 +276,13 @@ var artists = function(favoriteArtistInput){
 		findSimilarArtists: function(instance, favoriteArtist){
 			// void; displays content of the artistsList and adds even listener to the button
 			var similarArtistsUrlUpdated = $.Event('similarArtistsUrlUpdated');
-			fetch(`/artist?artist=${favoriteArtist}`).then(res => res.json()).then(playlist => {
+			fetch(`/artist?artist=${encodeURIComponent(favoriteArtist)}`).then(res => res.json()).then(playlist => {
 				console.warn(playlist);
-				playList = playlist.map(({ id }) => id);
+				playList = playlist.map(s => {
+					console.warn(s);
+					if (!s) return;
+					return s.id;
+				}).filter(s => !!s);
 				console.warn(playList);
 			})
 			// $.ajax({  
@@ -427,7 +431,8 @@ function createPlayer() {
 	  width: '640',
 	  events: {
 		'onReady': onPlayerReady,
-		'onStateChange': onPlayerStateChange
+		'onStateChange': onPlayerStateChange,
+		'onError': onError
 	  }
 	});
 	
@@ -468,3 +473,7 @@ $(document).ready(function(){
 	setTimeout(main, 1000);
 	// main();
 });
+
+function onError(e) {
+	player.getNext()
+}

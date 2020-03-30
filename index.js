@@ -42,7 +42,7 @@ const getToken = async () => AccessTokenSubject.getValue() || await getNewToken(
 const searchArtist = async (artistQuery) => {
   const token = await getToken();
   console.warn('searching artist ', artistQuery)
-  const result = await fetch(`https://api.spotify.com/v1/search?q=${artistQuery}&type=artist&limit=10`, {
+  const relatedArtistsResult = await fetch(`https://api.spotify.com/v1/search?q=${artistQuery}&type=artist&limit=10`, {
     headers: {
       Accept: 'application/json',
       Authorization: `Bearer ${token}`
@@ -51,7 +51,7 @@ const searchArtist = async (artistQuery) => {
   const { artists: {
     items: [{ id, name }] = [{}]
    } = {}
-  } = result;
+  } = relatedArtistsResult;
   return { name, id };
 }
 
@@ -68,12 +68,14 @@ const getRelatedArtists = async (artistId) => {
 }
 
 const getMusicVideos = async (artistName) => {
-  const { results = [] } = await fetch(`http://imvdb.com/api/v1/search/videos?q=${artistName}`, {
+  const name = encodeURIComponent(artistName);
+  console.warn(name)
+  const { results = [] } = await fetch(`http://imvdb.com/api/v1/search/videos?q=${name}`, {
     headers: {
       "IMVDB-APP-KEY": MUSIC_VIDEO_AUTH,
       Accept: 'application/json'
     }
-  }).then(res => res.json())
+  }).then(res => res.json()).catch(res => [])
   const songs = results.map(({ id, artists: [ { name, slug } ] }) => ({id, name, slug})).filter(({ name = "" }) => name.toLowerCase() === artistName.toLowerCase());
   return songs;
 }
@@ -117,7 +119,7 @@ const getYouTubeUrlForVideo = async (videoId) => {
     }
   }).then(res => res.json())
   const { sources } = response;
-  const filtered = sources.filter(({ source }) => source === 'youtube').map(({ source_data }) => `https://youtube.com/v/${source_data}`)
+  const filtered = sources.filter(({ source }) => source === 'youtube').map(({ source_data }) => source_data)
   // const songs = results.map(({ id, artists: [ { name, slug } ] }) => ({id, name, slug})).filter(({ name = "" }) => name.toLowerCase() === artistName.toLowerCase());
   return filtered;
 }
@@ -132,22 +134,43 @@ const getMusicVideoId = (req) => {
   return id;
 }
 
+const interlace = (original = [], related = []) => {
+  const result = [];
+  const rL = related.length;
+  const oL = original.length;
+  const ratio = Math.round(rL/oL);
+  result.push(original.pop());
+  related.forEach((r, i) => {
+    if (i%4 === 0) {
+      const song = original.pop();
+      result.push(song);
+    }
+    result.push(r);
+  })
+  return result.filter(r => !!r);
+}
+
 app.get('/artist', async (req, res) => {
   const artist = getArtistQuery(req);
   const { name, id } = await searchArtist(artist);
-  const artists = [{ name, id }, ...await getRelatedArtists(id)]
-  let result = [];
-  for (let i = 0; i < artists.length; i++) {
-    const musicVideos = await getMusicVideos(artists[i].name);
-    result = [...result, ...musicVideos];
+  const originalArtist = { name, id };
+  const relatedArtists = await getRelatedArtists(id);
+  let relatedArtistsResult = [];
+  for (let i = 0; i < relatedArtists.length; i++) {
+    const musicVideos = await getMusicVideos(relatedArtists[i].name);
+    relatedArtistsResult = [...relatedArtistsResult, ...musicVideos];
   }
-  res.send(shuffle(result))
+  relatedArtistsResult = shuffle(relatedArtistsResult);
+  let musicVideosOriginal = await getMusicVideos(originalArtist.name);
+  musicVideosOriginal = shuffle(musicVideosOriginal);
+  console.warn(musicVideosOriginal, relatedArtistsResult)
+  res.send(interlace(musicVideosOriginal, relatedArtistsResult))
 })
 
 app.get('/link', async (req, res) => {
   const musicVideoId = getMusicVideoId(req)
-  const [url] = await getYouTubeUrlForVideo(musicVideoId)
-  res.send(url)
+  const [link] = await getYouTubeUrlForVideo(musicVideoId)
+  res.send(link)
 })
 
 
