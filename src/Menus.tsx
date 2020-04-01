@@ -2,7 +2,7 @@ import { FastForward, FastRewind, Pause, PlayArrow } from "@material-ui/icons";
 import * as React from "react";
 import { BehaviorSubject } from "rxjs";
 import styled, { css } from "styled-components";
-import { PlayListSubject } from "./DataService";
+import { PlayListSubject, CurrentVideoSubject } from "./DataService";
 import { ListContainer } from "./List";
 import { PaneMixin } from "./Pane";
 import { Route, RouteSubject } from "./RouteService";
@@ -98,14 +98,15 @@ const ControlsWrapper = styled.div`
 `;
 
 const LeftPane: React.SFC = (props) => {
+  const [currentVideo] = useSharedState(CurrentVideoSubject);
   const [isPlaying] = useSharedState(IsPlayingSubject);
   return (
     <PaneWrapper position="left" id="slide">
       <h4 className="blue">Schmetterling</h4>
       <Spacer height={70} />
       <p>You're watching</p>
-      <h1>London Grammar</h1>
-      <h4 className="blue">Non-believer</h4>
+      <h1>{currentVideo && currentVideo.name}</h1>
+      <h4 className="blue">{currentVideo && currentVideo.song_title}</h4>
       <Spacer height={70} />
       <ControlsWrapper>
         <FastRewind

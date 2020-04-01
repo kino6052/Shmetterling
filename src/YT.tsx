@@ -6,7 +6,11 @@ import { Overlay } from "./Menus";
 import * as React from "react";
 import { IsPlayingSubject, NextSongSubject } from "./Player";
 import { MusicVideo } from "@material-ui/icons";
-import { MusicVideoSubject } from "./DataService";
+import {
+  MusicVideoSubject,
+  ICurrentVideo,
+  CurrentVideoSubject,
+} from "./DataService";
 import { getVW } from "./utils";
 
 export const TestSubject = new BehaviorSubject(null);
@@ -46,56 +50,59 @@ const initPlayer = () => {
     },
   });
   // @ts-ignore
-  const bgPlayer = new YT.Player("bg-player", {
-    playerVars: {
-      autoplay: 1,
-      controls: 0,
-      disablekb: 0,
-      fs: 0,
-      modestbranding: 1,
-    },
-    events: {
-      onReady: () => {
-        PlayerReadySubject.next({ id: 2 });
-      },
-      onStateChange: (e: unknown) => {
-        PlayerStateChangeSubject.next({ id: 2, e });
-      },
-    },
-  });
-  // @ts-ignore
-  PlayerRefSubject.next([player, bgPlayer]);
+  PlayerRefSubject.next([player]);
 };
 
 export const loadSong = (songId: string) => {
   const isPlaying = IsPlayingSubject.getValue();
   // @ts-ignore
   const [player] = PlayerRefSubject.getValue();
+  fetch(`/link?id=${songId}`)
+    .then((res) => {
+      console.warn(res);
+      return res.json();
+    })
+    .then((data) => {
+      CurrentVideoSubject.next(data as ICurrentVideo);
+      // @ts-ignore
+      player.loadVideoById(data.source_data);
+      // @ts-ignore
+      // bgPlayer.loadVideoById(songId);
+      if (isPlaying) return;
+      // @ts-ignore
+      player.pauseVideo();
+      // @ts-ignore
+      // bgPlayer.pauseVideo();
+    });
+};
+
+export const pause = () => {
   // @ts-ignore
-  player.loadVideoById(songId);
-  // @ts-ignore
-  // bgPlayer.loadVideoById(songId);
-  if (isPlaying) return;
+  const [player] = PlayerRefSubject.getValue();
   // @ts-ignore
   player.pauseVideo();
+};
+
+export const play = () => {
   // @ts-ignore
-  // bgPlayer.pauseVideo();
+  const [player] = PlayerRefSubject.getValue();
+  // @ts-ignore
+  player.playVideo();
 };
 
 YouTubeScriptLoadedStateSubject.pipe(filter((isLoaded) => isLoaded)).subscribe(
-  () => {
-    initPlayer();
-  }
+  initPlayer
 );
 
 PlayerReadySubject.pipe(filter(({ id }) => id === 1)).subscribe(() => {
   // @ts-ignore
   const [player] = PlayerRefSubject.getValue();
-  console.warn("body", player);
+  // console.warn("body", player);
 });
 
 PlayerStateChangeSubject.subscribe((a) => {
-  console.warn("TEST", a);
+  // @ts-ignore
+  console.warn("Data", a && a.data);
 });
 
 PlayerRefSubject.subscribe(console.warn);
@@ -118,38 +125,18 @@ const PlayerWrapper = styled.div`
 export const Player: React.SFC = (props) => (
   <PlayerWrapper>
     <Overlay />
-    {/* <div id="bg-player">Background Player</div> */}
     <div id="player">Player One</div>
   </PlayerWrapper>
 );
 
 PlayerReadySubject.subscribe(() => {
   NextSongSubject.subscribe(() => {
-    // const videos = MusicVideoSubject.getValue();
-    loadSong("RvnkAtWcKYg");
+    const videos = MusicVideoSubject.getValue();
+    const index = Math.round(Math.random() * (videos.length - 1));
+    console.warn(index, videos[index].id);
+    loadSong(videos[index].id);
   });
-});
-
-const test = (player: unknown) => {
   IsPlayingSubject.subscribe((isPlaying) => {
-    if (isPlaying) {
-      // @ts-ignore
-      player.playVideo();
-    } else {
-      // @ts-ignore
-      player.pauseVideo();
-    }
+    isPlaying ? play() : pause();
   });
-};
-
-PlayerReadySubject.pipe(filter(({ id }) => id === 2)).subscribe(() => {
-  // @ts-ignore
-  const [_, player] = PlayerRefSubject.getValue();
-  test(player);
-});
-
-PlayerReadySubject.pipe(filter(({ id }) => id === 1)).subscribe(() => {
-  // @ts-ignore
-  const [player] = PlayerRefSubject.getValue();
-  test(player);
 });
