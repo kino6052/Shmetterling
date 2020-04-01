@@ -1,21 +1,24 @@
 import { useState, useEffect } from "react";
 
+// @ts-ignore
 let cachedScripts = [];
 
+// @ts-ignore
 export function useScript(src) {
   // Keeping track of script loaded and error state
   const [state, setState] = useState({
     loaded: false,
-    error: false
+    error: false,
   });
 
   useEffect(() => {
     // If cachedScripts array already includes src that means another instance ...
     // ... of this hook already loaded this script, so no need to load again.
+    // @ts-ignore
     if (cachedScripts.includes(src)) {
       setState({
         loaded: true,
-        error: false
+        error: false,
       });
     } else {
       cachedScripts.push(src);
@@ -29,19 +32,21 @@ export function useScript(src) {
       const onScriptLoad = () => {
         setState({
           loaded: true,
-          error: false
+          error: false,
         });
       };
 
       const onScriptError = () => {
         // Remove from cachedScripts we can try loading again
+        // @ts-ignore
         const index = cachedScripts.indexOf(src);
+        // @ts-ignore
         if (index >= 0) cachedScripts.splice(index, 1);
         script.remove();
 
         setState({
           loaded: true,
-          error: true
+          error: true,
         });
       };
 

@@ -1,6 +1,23 @@
 import * as React from "react";
 import styled from "styled-components";
-import { PaneMixin } from "./Menus";
+import { getVW, useSharedState } from "./utils";
+import {
+  PlayListSubject,
+  ArtistSubject,
+  SimilarArtistsSubject,
+  addItem,
+  InputSubject,
+} from "./DataService";
+import { RouteSubject, Route } from "./RouteService";
+import { Spacer } from "./Spacer";
+import {
+  IListItem,
+  ListContainerWrapper,
+  ListItem,
+  ListContainer,
+} from "./List";
+import { Add, ArrowBack } from "@material-ui/icons";
+import { PaneMixin } from "./Pane";
 
 const SearchScreenWrapper = styled.div`
   ${PaneMixin}
@@ -34,7 +51,28 @@ const BandPanelWrapper = styled.div`
   overflow-y: scroll;
 `;
 
-const SearchScreen: React.SFC = props => {
+export const SearchListContainer: React.SFC<{
+  heading: string;
+  items: IListItem[];
+}> = (props) => {
+  const { items = [], heading = "" } = props;
+  return (
+    <ListContainerWrapper>
+      {heading && <h4>{heading}</h4>}
+      {items.map((item) => (
+        <ListItem item={item}>
+          <Add
+            onClick={() => {
+              addItem(item);
+            }}
+          />
+        </ListItem>
+      ))}
+    </ListContainerWrapper>
+  );
+};
+
+export const SearchScreen: React.SFC = (props) => {
   const [playlist] = useSharedState(PlayListSubject);
   const [artists] = useSharedState(ArtistSubject);
   const [similarArtists] = useSharedState(SimilarArtistsSubject);
