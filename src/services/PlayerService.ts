@@ -22,6 +22,7 @@ export const play = () => {
 };
 
 const playNext = () => {
+  IsPlayingSubject.next(true);
   const videos = MusicVideoSubject.getValue();
   if (!videos || !videos.length) return;
   const index = Math.round(Math.random() * (videos.length - 1));
