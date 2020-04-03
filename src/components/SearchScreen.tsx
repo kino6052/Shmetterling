@@ -1,14 +1,14 @@
 import * as React from "react";
 import styled from "styled-components";
-import { getVW, useSharedState } from "./utils";
+import { getVW, useSharedState } from "../utils/utils";
 import {
   PlayListSubject,
   ArtistSubject,
   SimilarArtistsSubject,
   addItem,
   InputSubject,
-} from "./DataService";
-import { RouteSubject, Route } from "./RouteService";
+} from "../services/DataService";
+import { RouteSubject, Route } from "../services/RouteService";
 import { Spacer } from "./Spacer";
 import {
   IListItem,

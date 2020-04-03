@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as React from "react";
-import { getVW } from "./utils";
-import { removeItem } from "./DataService";
+import { getVW } from "../utils/utils";
+import { removeItem } from "../services/DataService";
 import { Delete } from "@material-ui/icons";
 
 export const ListContainerWrapper = styled.div`

@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./styles.css";
-import { useYouTubeScript, Player } from "./YT";
+import { useYouTubeScript } from "./services/YouTubeService";
+import { Player } from "./components/Player";
 
 export default function App() {
   useYouTubeScript();

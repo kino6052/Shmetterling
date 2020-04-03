@@ -1,13 +1,21 @@
 {
   "include": [
-    "./src/*"
+    "./src/*",
+    "src/utils/useScript.ts",
+    "src/utils/utils.ts",
+    "src/services/RouteService.ts",
+    "src/services/react-app-env.d.ts",
+    "src/components/Pane.tsx",
+    "src/components/SearchScreen.tsx",
+    "src/services/YouTubeService.tsx",
+    "src/services/PlayerService.ts",
+    "src/components/Menus.tsx",
+    "src/components/List.tsx",
+    "src/services/DataService.ts"
   ],
   "compilerOptions": {
     "strict": true,
-    "lib": [
-      "dom",
-      "es2015"
-    ],
+    "lib": ["dom", "es2015"],
     "jsx": "react",
     "target": "es5",
     "allowJs": true,

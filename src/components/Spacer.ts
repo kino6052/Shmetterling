@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { getVW } from './utils';
+import styled from "styled-components";
+import { getVW } from "../utils/utils";
 
 export const Spacer = styled.div<{ height: number }>`
   display: flex;

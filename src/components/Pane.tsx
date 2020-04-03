@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { getVW, BLUE } from "./utils";
+import { getVW, BLUE } from "../utils/utils";
 
 export const PaneMixin = css`
   color: white;

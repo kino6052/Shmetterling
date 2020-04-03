@@ -2,14 +2,18 @@ import { FastForward, FastRewind, Pause, PlayArrow } from "@material-ui/icons";
 import * as React from "react";
 import { BehaviorSubject } from "rxjs";
 import styled, { css } from "styled-components";
-import { PlayListSubject, CurrentVideoSubject } from "./DataService";
+import { PlayListSubject, CurrentVideoSubject } from "../services/DataService";
 import { ListContainer } from "./List";
 import { PaneMixin } from "./Pane";
-import { Route, RouteSubject } from "./RouteService";
+import { Route, RouteSubject } from "../services/RouteService";
 import { SearchScreen } from "./SearchScreen";
 import { Spacer } from "./Spacer";
-import { getVW, MARGIN, useSharedState, ZERO } from "./utils";
-import { IsPlayingSubject, PrevSongSubject, NextSongSubject } from "./Player";
+import { getVW, MARGIN, useSharedState, ZERO } from "../utils/utils";
+import {
+  IsPlayingSubject,
+  PrevSongSubject,
+  NextSongSubject,
+} from "../services/PlayerService";
 
 const OverlayWrapper = styled.div`
   color: white;

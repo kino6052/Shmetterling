@@ -1,6 +1,5 @@
 import { BehaviorSubject } from "rxjs";
-import { filter, skip, debounce, debounceTime } from "rxjs/operators";
-import { IsPlayingSubject } from "./Player";
+import { debounceTime, filter, skip } from "rxjs/operators";
 
 export interface IArtist {
   name: string;
