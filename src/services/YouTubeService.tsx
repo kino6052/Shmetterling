@@ -1,6 +1,7 @@
-import { BehaviorSubject, forkJoin, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "../utils/utils";
 import { filter, skip, take } from "rxjs/operators";
 import { useScript } from "../utils/useScript";
+import { forkJoin } from "rxjs";
 
 interface IPlayer {
   loadVideoById: (id: string) => void;
@@ -8,15 +9,28 @@ interface IPlayer {
   pauseVideo: () => void;
 }
 
-export const InitSubject = new Subject();
-export const TestSubject = new BehaviorSubject(null);
-export const PlayerRefSubject = new BehaviorSubject<IPlayer[]>([]);
-export const YouTubeScriptLoadedStateSubject = new BehaviorSubject(false);
-export const PlayerReadySubject = new BehaviorSubject({ id: 0 });
+export const InitSubject = new Subject("InitSubject");
+export const TestSubject = new BehaviorSubject(null, "TestSubject");
+export const PlayerRefSubject = new BehaviorSubject<IPlayer[]>(
+  [],
+  "PlayerRefSubject"
+);
+export const YouTubeScriptLoadedStateSubject = new BehaviorSubject(
+  false,
+  "YouTubeScriptLoadedStateSubject"
+);
+export const PlayerReadySubject = new BehaviorSubject(
+  { id: 0 },
+  "PlayerReadySubject"
+);
 export const PlayerStateChangeSubject = new BehaviorSubject<{
   id: number;
   e: unknown;
-}>({ id: 0, e: null });
+}>({ id: 0, e: null }, "PlayerStateChangeSubject");
+export const PlayerErrorSubject = new BehaviorSubject<{
+  id: number;
+  e: unknown;
+}>({ id: 0, e: null }, "PlayerErrorSubject");
 
 export const useYouTubeScript = () => {
   const [loaded] = useScript("https://www.youtube.com/player_api");
@@ -42,6 +56,9 @@ const initPlayer = () => {
       },
       onStateChange: (e: unknown) => {
         PlayerStateChangeSubject.next({ id: 1, e });
+      },
+      onError: (e: unknown) => {
+        PlayerErrorSubject.next({ id: 1, e });
       },
     },
   });

@@ -1,15 +1,50 @@
-import { BehaviorSubject, Subject } from "rxjs";
-import { InitSubject, PlayerRefSubject } from "./YouTubeService";
+import { skip, throttleTime, filter, debounceTime, map } from "rxjs/operators";
 import {
-  MusicVideoSubject,
   CurrentVideoSubject,
   ICurrentVideo,
+  InputSubject,
 } from "./DataService";
-import { skip } from "rxjs/operators";
+import {
+  InitSubject,
+  PlayerErrorSubject,
+  PlayerRefSubject,
+  PlayerStateChangeSubject,
+} from "./YouTubeService";
+import { DEFAULT_DELAY, IDLE_DELAY } from "../constants";
+import { BehaviorSubject, Subject, debug } from "../utils/utils";
+import { Subject as ISubject, concat, forkJoin, combineLatest } from "rxjs";
+import { RouteSubject, Route } from "./RouteService";
 
-export const IsPlayingSubject = new BehaviorSubject<boolean>(true);
-export const NextSongSubject = new Subject();
-export const PrevSongSubject = new Subject();
+export const IsPlayingSubject = new BehaviorSubject<boolean>(
+  true,
+  "IsPlayingSubject"
+);
+export const NextSongSubject = new Subject("NextSongSubject").pipe(
+  throttleTime(DEFAULT_DELAY)
+) as ISubject<unknown>;
+export const PrevSongSubject = new Subject("PrevSongSubject");
+export const IsLoadingSubject = new BehaviorSubject<boolean>(
+  true,
+  "IsLoadingSubject"
+);
+export const IsIdleSubject = new BehaviorSubject<boolean>(true);
+
+export const ShouldShowMenuSubject = new BehaviorSubject(true);
+
+export const __ShouldShowMenuSubject = combineLatest(
+  IsIdleSubject,
+  IsPlayingSubject,
+  RouteSubject
+).pipe(
+  map(([isIdle, isPlaying, route]) => {
+    return !isIdle || !isPlaying || route === Route.Add;
+  })
+);
+
+export const toggleIsPlaying = () => {
+  const isPlaying = IsPlayingSubject.getValue();
+  IsPlayingSubject.next(!isPlaying);
+};
 
 export const pause = () => {
   const [player] = PlayerRefSubject.getValue();
@@ -21,35 +56,45 @@ export const play = () => {
   player.playVideo();
 };
 
-const playNext = () => {
-  IsPlayingSubject.next(true);
-  const videos = MusicVideoSubject.getValue();
-  if (!videos || !videos.length) return;
-  const index = Math.round(Math.random() * (videos.length - 1));
-  console.warn(index, videos[index].id);
-  loadSong(videos[index].id);
-};
-
-export const loadSong = (songId: string) => {
-  const isPlaying = IsPlayingSubject.getValue();
+export const loadVideo = (currentVideo: ICurrentVideo) => {
   const [player] = PlayerRefSubject.getValue();
-  fetch(`/link?id=${songId}`)
-    .then((res) => {
-      console.warn(res);
-      return res.json();
-    })
-    .then((data) => {
-      CurrentVideoSubject.next(data as ICurrentVideo);
-      player.loadVideoById(data.source_data);
-      if (isPlaying) return;
-      player.pauseVideo();
-    });
+  player.loadVideoById(currentVideo.source_data);
 };
 
 InitSubject.subscribe(() => {
-  NextSongSubject.subscribe(() => playNext());
+  __ShouldShowMenuSubject.subscribe((shouldShowMenu) => {
+    ShouldShowMenuSubject.next(shouldShowMenu);
+  });
+
+  IsIdleSubject.pipe(
+    filter((isIdle) => !isIdle),
+    debounceTime(IDLE_DELAY)
+  ).subscribe(() => {
+    IsIdleSubject.next(true);
+  });
+
+  PlayerErrorSubject.pipe(skip(1)).subscribe(() => {
+    NextSongSubject.next();
+  });
+
+  PlayerStateChangeSubject.pipe(skip(1)).subscribe(({ e }) => {
+    const { data } = e as { data: number };
+    const isLoading = data !== 1;
+    IsLoadingSubject.next(isLoading);
+  });
+
+  CurrentVideoSubject.pipe(skip(1)).subscribe((currentVideo) => {
+    if (!currentVideo) return;
+    loadVideo(currentVideo);
+  });
+
+  NextSongSubject.subscribe(() => {
+    IsPlayingSubject.next(true);
+  });
+
   IsPlayingSubject.pipe(skip(1)).subscribe((isPlaying) => {
     isPlaying ? play() : pause();
   });
+
   NextSongSubject.next();
 });

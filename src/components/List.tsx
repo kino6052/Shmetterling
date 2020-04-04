@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import * as React from "react";
 import { getVW } from "../utils/utils";
-import { removeItem } from "../services/DataService";
 import { Delete } from "@material-ui/icons";
+import { RemoveBandSubject } from "../services/DataService";
 
 export const ListContainerWrapper = styled.div`
   margin: 0;
@@ -39,8 +39,8 @@ export const ListItemWrapper = styled.div`
   }
 `;
 
-export const ListItem: React.SFC<{ item: IListItem }> = (props) => {
-  const { item: { name = "" } = {}, children } = props;
+export const ListItem: React.SFC<{ band: IListItem }> = (props) => {
+  const { band: { name = "" } = {}, children } = props;
   return (
     <ListItemWrapper>
       <h4>{name}</h4>
@@ -57,11 +57,11 @@ export const ListContainer: React.SFC<{
   return (
     <ListContainerWrapper>
       {heading && <h4>{heading}</h4>}
-      {items.map((item) => (
-        <ListItem item={item}>
+      {items.map((band) => (
+        <ListItem band={band}>
           <Delete
             onClick={() => {
-              removeItem(item);
+              RemoveBandSubject.next(band);
             }}
           />
         </ListItem>

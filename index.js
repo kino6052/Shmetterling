@@ -29,12 +29,12 @@ const getNewToken = async () => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: SPOTIFY_AUTH,
-        Accept: "application/json",
-      },
+        Accept: "application/json"
+      }
     }
   )
-    .then((res) => res.json())
-    .catch((e) => console.warn(e));
+    .then(res => res.json())
+    .catch(e => console.warn(e));
   if (!access_token) throw new Error("No Access Token Returned");
   setTimeout(() => {
     AccessTokenSubject.next(undefined);
@@ -45,7 +45,7 @@ const getNewToken = async () => {
 const getToken = async () =>
   AccessTokenSubject.getValue() || (await getNewToken());
 
-const searchArtist = async (artistQuery) => {
+const searchArtist = async artistQuery => {
   const token = await getToken();
   console.warn("searching artist ", artistQuery);
   const relatedArtistsResult = await fetch(
@@ -53,17 +53,17 @@ const searchArtist = async (artistQuery) => {
     {
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     }
-  ).then((res) => res.json());
+  ).then(res => res.json());
   const {
-    artists: { items: [{ id, name }] = [{}] } = {},
+    artists: { items: [{ id, name }] = [{}] } = {}
   } = relatedArtistsResult;
   return { name, id };
 };
 
-const getRelatedArtists = async (artistId) => {
+const getRelatedArtists = async artistId => {
   // https://api.spotify.com/v1/artists/7bu3H8JO7d0UbMoVzbo70s/related-artists
   const token = await getToken();
   const { artists = [] } = await fetch(
@@ -71,14 +71,14 @@ const getRelatedArtists = async (artistId) => {
     {
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     }
-  ).then((res) => res.json());
+  ).then(res => res.json());
   return artists.map(({ id, name }) => ({ id, name }));
 };
 
-const getMusicVideos = async (artistName) => {
+const getMusicVideos = async artistName => {
   const name = encodeURIComponent(artistName);
   console.warn(name);
   const { results = [] } = await fetch(
@@ -86,19 +86,19 @@ const getMusicVideos = async (artistName) => {
     {
       headers: {
         "IMVDB-APP-KEY": MUSIC_VIDEO_AUTH,
-        Accept: "application/json",
-      },
+        Accept: "application/json"
+      }
     }
   )
-    .then((res) => res.json())
-    .catch((res) => []);
+    .then(res => res.json())
+    .catch(res => []);
   const songs = results
     .map(({ id, artists: [{ name, slug }] }) => ({ id, name, slug }))
     .filter(({ name = "" }) => name.toLowerCase() === artistName.toLowerCase());
   return songs;
 };
 
-const getArtistsMusicVideoId = async (artistName) => {
+const getArtistsMusicVideoId = async artistName => {
   console.warn("Get Artists Music Videos", artistName);
   const songs = getMusicVideos();
   const r = [];
@@ -129,22 +129,22 @@ function shuffle(array) {
   return array;
 }
 
-const getYouTubeUrlForVideo = async (videoId) => {
+const getYouTubeUrlForVideo = async videoId => {
   console.warn(videoId);
   const response = await fetch(
     `http://imvdb.com/api/v1/video/${videoId}?include=sources`,
     {
       headers: {
         "IMVDB-APP-KEY": MUSIC_VIDEO_AUTH,
-        Accept: "application/json",
-      },
+        Accept: "application/json"
+      }
     }
-  ).then((res) => res.json());
+  ).then(res => res.json());
   const {
     id,
     song_title,
     artists: [{ name }],
-    sources: [{ source_data }],
+    sources: [{ source_data }]
   } = response;
   // const filtered = s
   //   .filter(({ source }) => source === "youtube")
@@ -153,14 +153,19 @@ const getYouTubeUrlForVideo = async (videoId) => {
   return { id, song_title, name, source_data };
 };
 
-const getArtistQuery = (req) => {
-  const { query: { artist = "" } = {} } = req;
-  return artist;
+const getArtistQuery = req => {
+  const { query: { q = "" } = {} } = req || {};
+  return q;
 };
 
-const getMusicVideoId = (req) => {
-  const { query: { id = "" } = {} } = req;
+const getMusicVideoId = req => {
+  const { query: { id = "" } = {} } = req || {};
   return id;
+};
+
+const getArtistName = req => {
+  const { params: { name = "" } = {} } = req || {};
+  return name;
 };
 
 const interlace = (original = [], related = []) => {
@@ -176,24 +181,22 @@ const interlace = (original = [], related = []) => {
     }
     result.push(r);
   });
-  return result.filter((r) => !!r);
+  return result.filter(r => !!r);
 };
 
+app.get("/artist/:name", async (req, res) => {
+  const name = getArtistName(req);
+  let musicVideosOriginal = await getMusicVideos(name);
+  musicVideos = shuffle(musicVideosOriginal);
+  res.send(musicVideos);
+});
+
 app.get("/artist", async (req, res) => {
-  const artist = getArtistQuery(req);
-  const { name, id } = await searchArtist(artist);
-  const originalArtist = { name, id };
+  const artistQuery = getArtistQuery(req);
+  const { name, id } = await searchArtist(artistQuery);
+  const artist = { name, id };
   const relatedArtists = await getRelatedArtists(id);
-  let relatedArtistsResult = [];
-  for (let i = 0; i < relatedArtists.length; i++) {
-    const musicVideos = await getMusicVideos(relatedArtists[i].name);
-    relatedArtistsResult = [...relatedArtistsResult, ...musicVideos];
-  }
-  relatedArtistsResult = shuffle(relatedArtistsResult);
-  let musicVideosOriginal = await getMusicVideos(originalArtist.name);
-  musicVideosOriginal = shuffle(musicVideosOriginal);
-  console.warn(musicVideosOriginal, relatedArtistsResult);
-  res.send(interlace(musicVideosOriginal, relatedArtistsResult));
+  res.send({ artist, relatedArtists });
 });
 
 app.get("/link", async (req, res) => {

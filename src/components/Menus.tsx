@@ -13,6 +13,7 @@ import {
   IsPlayingSubject,
   PrevSongSubject,
   NextSongSubject,
+  ShouldShowMenuSubject,
 } from "../services/PlayerService";
 
 const OverlayWrapper = styled.div`
@@ -39,6 +40,7 @@ const OverlayWrapper = styled.div`
     margin-left: -50%;
     width: 200%;
     opacity: 0;
+    cursor: none;
   }
   @keyframes shrink {
     0% {
@@ -166,7 +168,7 @@ export const Overlay: React.SFC = (props) => {
   const [route] = useSharedState(RouteSubject);
   const isMain = route === Route.Main;
   const isAdd = route === Route.Add;
-  const [isIn] = useSharedState(MouseOverSubject);
+  const [isIn] = useSharedState(ShouldShowMenuSubject);
   const className = isIn ? "in" : "out";
   return (
     <OverlayWrapper

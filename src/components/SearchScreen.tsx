@@ -4,9 +4,10 @@ import { getVW, useSharedState } from "../utils/utils";
 import {
   PlayListSubject,
   ArtistSubject,
-  SimilarArtistsSubject,
-  addItem,
+  RelatedArtistsSubject,
   InputSubject,
+  AddBandSubject,
+  IsFetchingSubject,
 } from "../services/DataService";
 import { RouteSubject, Route } from "../services/RouteService";
 import { Spacer } from "./Spacer";
@@ -18,6 +19,8 @@ import {
 } from "./List";
 import { Add, ArrowBack } from "@material-ui/icons";
 import { PaneMixin } from "./Pane";
+import { IsLoadingSubject } from "../services/PlayerService";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const SearchScreenWrapper = styled.div`
   ${PaneMixin}
@@ -49,6 +52,12 @@ const BandPanelWrapper = styled.div`
   height: ${getVW(300)}vw;
   margin-right: ${getVW(24)}vw;
   overflow-y: scroll;
+  .progres {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    border: 1px solid red;
+  }
 `;
 
 export const SearchListContainer: React.SFC<{
@@ -59,11 +68,11 @@ export const SearchListContainer: React.SFC<{
   return (
     <ListContainerWrapper>
       {heading && <h4>{heading}</h4>}
-      {items.map((item) => (
-        <ListItem item={item}>
+      {items.map((band) => (
+        <ListItem band={band}>
           <Add
             onClick={() => {
-              addItem(item);
+              AddBandSubject.next(band);
             }}
           />
         </ListItem>
@@ -75,7 +84,9 @@ export const SearchListContainer: React.SFC<{
 export const SearchScreen: React.SFC = (props) => {
   const [playlist] = useSharedState(PlayListSubject);
   const [artists] = useSharedState(ArtistSubject);
-  const [similarArtists] = useSharedState(SimilarArtistsSubject);
+  const [similarArtists] = useSharedState(RelatedArtistsSubject);
+  const [isFetching] = useSharedState(IsFetchingSubject);
+  const hasSimilarArtists = similarArtists.length > 0;
   return (
     <SearchScreenWrapper {...props}>
       <h4 className="blue" onClick={() => RouteSubject.next(Route.Main)}>
@@ -94,8 +105,16 @@ export const SearchScreen: React.SFC = (props) => {
       <Spacer height={70} />
       <BandWrapper>
         <BandPanelWrapper>
-          <SearchListContainer heading="Bands" items={artists} />
-          <SearchListContainer heading="Similar Bands" items={similarArtists} />
+          {isFetching && <CircularProgress classes={{ root: "progress" }} />}
+          {!isFetching && (
+            <SearchListContainer heading="Bands" items={artists} />
+          )}
+          {hasSimilarArtists && !isFetching && (
+            <SearchListContainer
+              heading="Similar Bands"
+              items={similarArtists}
+            />
+          )}
         </BandPanelWrapper>
         <BandPanelWrapper>
           <ListContainer heading="Current Playlist" items={playlist} />

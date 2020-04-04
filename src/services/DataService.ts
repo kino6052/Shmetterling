@@ -1,13 +1,22 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject, shuffle } from "../utils/utils";
 import { debounceTime, filter, skip } from "rxjs/operators";
+import { InitSubject } from "./YouTubeService";
+import {
+  NextSongSubject,
+  IsPlayingSubject,
+  PrevSongSubject,
+} from "./PlayerService";
+import { DEFAULT_DELAY } from "../constants";
+import { appendToSubjectValue } from "../utils/utils";
 
 export interface IArtist {
   name: string;
   id: string;
+  slug?: string;
 }
 
 export interface IMusicVideo {
-  artistId: string;
+  name: string;
   id: string;
 }
 
@@ -18,87 +27,152 @@ export interface ICurrentVideo {
   source_data: string;
 }
 
-const DEF_LEPPARD = { name: "Def Leppard", id: "6H1RjVyNruCmrBEWRbD0VZ" };
+const MR_OIZO = { name: "Mr. Oizo", id: "6H1RjVyNruCmrBEWRbD0VZ" };
 
-const DEF_LEPPARD_SONGS = [
-  "632891194030",
-  "976156654927",
-  "252397807297",
-  "393369892894",
-  "234580981640",
-  "260438454125",
-  "234277966150",
-  "275815992778",
-  "140919029967",
-  "579600524369",
-  "237820987589",
-  "509116109981",
-  "100745487121",
-  "694298539264",
-  "258342676821",
-  "314886745488",
-  "230924447564",
-  "470352069504",
-  "197810592754",
-  "145432423657",
-  "159935133256",
-  "717512434768",
-  "258511131842",
-  "223243586389",
-  "158983824218",
-];
+const MR_OIZO_SONGS = ["240921811081"];
 
-const generate = () =>
-  DEF_LEPPARD_SONGS.map((id) => ({ artistId: DEF_LEPPARD.id, id }));
+const generate = () => MR_OIZO_SONGS.map((id) => ({ name: MR_OIZO.name, id }));
 
-export const InputSubject = new BehaviorSubject<string>("");
-export const ArtistSubject = new BehaviorSubject<IArtist[]>([]);
-export const SimilarArtistsSubject = new BehaviorSubject<IArtist[]>([]);
-export const PlayListSubject = new BehaviorSubject<IArtist[]>([DEF_LEPPARD]);
-export const MusicVideoSubject = new BehaviorSubject<IMusicVideo[]>(generate());
-export const CurrentVideoSubject = new BehaviorSubject<ICurrentVideo | null>(
-  null
+export const AddBandSubject = new Subject<IArtist>("AddBandSubject");
+export const RemoveBandSubject = new Subject<IArtist>("RemoveBandSubject");
+export const InputSubject = new BehaviorSubject<string>("", "InputSubject");
+export const ArtistSubject = new BehaviorSubject<IArtist[]>(
+  [],
+  "ArtistSubject"
 );
-
-export const addItem = (item: IArtist) => {
-  const newValue = [...PlayListSubject.getValue(), item].filter(
-    (v, i, a) => a.indexOf(v) === i
-  );
-  PlayListSubject.next(newValue);
-};
-
-export const removeItem = (item: IArtist) => {
-  PlayListSubject.next(
-    PlayListSubject.getValue().filter((v) => v.name !== item.name)
-  );
-};
+export const RelatedArtistsSubject = new BehaviorSubject<IArtist[]>(
+  [],
+  "RelatedArtistsSubject"
+);
+export const PlayListSubject = new BehaviorSubject<IArtist[]>(
+  [MR_OIZO],
+  "PlayListSubject"
+);
+export const MusicVideoSubject = new BehaviorSubject<IMusicVideo[]>(
+  generate(),
+  "MusicVideoSubject"
+);
+export const MusicVideoIndexSubject = new BehaviorSubject<number>(
+  0,
+  "MusicVideoIndexSubject"
+);
+export const CurrentVideoSubject = new BehaviorSubject<ICurrentVideo | null>(
+  null,
+  "CurrentVideoSubject"
+);
+export const IsFetchingSubject = new BehaviorSubject<boolean>(
+  false,
+  "IsFetchingSubject"
+);
+export const ErrorSubject = new Subject<string>();
 
 export const searchArtist = (query: string) => {
-  ArtistSubject.next([
-    { name: "The Cure", id: "1" },
-    { name: "The Cult", id: "2" },
-    { name: "The Crab", id: "3" },
-  ]);
+  ArtistSubject.next([]);
+  RelatedArtistsSubject.next([]);
+  if (!query) return;
+  IsFetchingSubject.next(true);
+  fetch(`/artist?q=${query}`)
+    .then((res) => {
+      return res.json();
+    })
+    .then(({ artist = {}, relatedArtists = [] }) => {
+      IsFetchingSubject.next(false);
+      if (JSON.stringify(artist) === "{}") return;
+      ArtistSubject.next([artist]);
+      RelatedArtistsSubject.next(relatedArtists);
+    })
+    .catch((e) => {
+      ErrorSubject.next(e.toString());
+      IsFetchingSubject.next(false);
+    });
 };
 
-InputSubject.pipe(
-  debounceTime(500),
-  filter((v) => v.length > 3)
-).subscribe((query) => {
-  searchArtist(query);
-});
+export const getIndex = (videos: IMusicVideo[], value: number) => {
+  if (!videos || !videos.length) return;
+  const currentIndex = MusicVideoIndexSubject.getValue();
+  const index = (videos.length + (currentIndex + value)) % videos.length;
+  MusicVideoIndexSubject.next(index);
+};
 
-ArtistSubject.pipe(
-  skip(1),
-  filter((a) => !!a)
-).subscribe((artists) => {
-  SimilarArtistsSubject.next([
-    { name: "The One", id: "4" },
-    { name: "The Two", id: "5" },
-    { name: "The Three", id: "6" },
-  ]);
-});
+export const getVideoDataForMusicVideoId = (musicVideoId: string) => {
+  fetch(`/link?id=${musicVideoId}`)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      CurrentVideoSubject.next(data as ICurrentVideo);
+    })
+    .catch((e) => {
+      ErrorSubject.next(e.toString());
+    });
+};
 
-PlayListSubject.pipe(skip(1)).subscribe((playlist) => {
-  MusicVideoSubject.next(playlist.map((p) => ({ artistId: p.id, id: "1" })));
+export const getMusicVideos = async (band: IArtist): Promise<IMusicVideo[]> =>
+  fetch(`/artist/${band.name}`)
+    .then((res) => {
+      return res.json();
+    })
+    .catch((e) => {
+      ErrorSubject.next(e.toString());
+    });
+
+export const addMusicVideos = (musicVideos: IMusicVideo[]) => {
+  const currentVideos = MusicVideoSubject.getValue();
+  MusicVideoSubject.next(shuffle([...currentVideos, ...musicVideos]));
+};
+
+export const removeMusicVideosByBand = (band: IArtist) => {
+  const musicVideos = MusicVideoSubject.getValue();
+  console.warn();
+  MusicVideoSubject.next(
+    musicVideos.filter(
+      ({ name }) => band.name.toLowerCase() !== name.toLowerCase()
+    )
+  );
+};
+
+export const removeBand = (band: IArtist) => {
+  const artists = PlayListSubject.getValue();
+  PlayListSubject.next(
+    artists.filter(({ name }) => band.name.toLowerCase() !== name.toLowerCase())
+  );
+};
+
+InitSubject.subscribe(() => {
+  InputSubject.pipe(skip(1), debounceTime(DEFAULT_DELAY)).subscribe((query) => {
+    searchArtist(query);
+  });
+
+  AddBandSubject.subscribe(async (band) => {
+    const bands = PlayListSubject.getValue();
+    if (bands.map((b) => b.id).includes(band.id)) return;
+    appendToSubjectValue(PlayListSubject, [band]);
+    const musicVideos = await getMusicVideos(band);
+    console.warn(musicVideos);
+    addMusicVideos(musicVideos);
+  });
+
+  RemoveBandSubject.subscribe((band) => {
+    removeMusicVideosByBand(band);
+    removeBand(band);
+  });
+
+  NextSongSubject.subscribe(() => {
+    const videos = MusicVideoSubject.getValue();
+    getIndex(videos, 1);
+  });
+
+  PrevSongSubject.subscribe(() => {
+    const videos = MusicVideoSubject.getValue();
+    getIndex(videos, -1);
+  });
+
+  MusicVideoIndexSubject.pipe(skip(1)).subscribe((index) => {
+    const videos = MusicVideoSubject.getValue();
+    getVideoDataForMusicVideoId(videos[index].id);
+  });
+
+  ErrorSubject.subscribe((e) => {
+    console.warn(e);
+  });
 });

@@ -1,8 +1,11 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject } from "../utils/utils";
 
 export enum Route {
   Main = "main",
-  Add = "add"
+  Add = "add",
 }
 
-export const RouteSubject = new BehaviorSubject<Route>(Route.Main);
+export const RouteSubject = new BehaviorSubject<Route>(
+  Route.Main,
+  "RouteSubject"
+);
