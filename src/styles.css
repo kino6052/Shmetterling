@@ -2,6 +2,9 @@ body {
   margin: 0;
   overflow: hidden;
 }
+* {
+  transition: 1s;
+}
 .App {
   font-family: sans-serif;
   text-align: center;

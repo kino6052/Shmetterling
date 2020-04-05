@@ -79,7 +79,9 @@ InitSubject.subscribe(() => {
 
   PlayerStateChangeSubject.pipe(skip(1)).subscribe(({ e }) => {
     const { data } = e as { data: number };
-    const isLoading = data !== 1;
+    const hasEnded = data === 0;
+    if (hasEnded) NextSongSubject.next();
+    const isLoading = ![0, 1, 2].includes(data);
     IsLoadingSubject.next(isLoading);
   });
 

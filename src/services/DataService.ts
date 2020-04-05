@@ -1,6 +1,6 @@
 import { BehaviorSubject, Subject, shuffle } from "../utils/utils";
 import { debounceTime, filter, skip } from "rxjs/operators";
-import { InitSubject } from "./YouTubeService";
+import { InitSubject, PlayerErrorSubject } from "./YouTubeService";
 import {
   NextSongSubject,
   IsPlayingSubject,
@@ -131,11 +131,23 @@ export const removeMusicVideosByBand = (band: IArtist) => {
   );
 };
 
+export const removeMusicVideosById = (musicVideoId: string) => {
+  const musicVideos = MusicVideoSubject.getValue();
+  console.warn();
+  MusicVideoSubject.next(musicVideos.filter(({ id }) => id !== musicVideoId));
+};
+
 export const removeBand = (band: IArtist) => {
   const artists = PlayListSubject.getValue();
   PlayListSubject.next(
     artists.filter(({ name }) => band.name.toLowerCase() !== name.toLowerCase())
   );
+};
+
+export const removeCurrentVideo = () => {
+  const currentVideo = CurrentVideoSubject.getValue();
+  if (!currentVideo) return;
+  removeMusicVideosById(currentVideo.id);
 };
 
 InitSubject.subscribe(() => {
@@ -150,6 +162,10 @@ InitSubject.subscribe(() => {
     const musicVideos = await getMusicVideos(band);
     console.warn(musicVideos);
     addMusicVideos(musicVideos);
+  });
+
+  PlayerErrorSubject.pipe(skip(1)).subscribe(() => {
+    removeCurrentVideo();
   });
 
   RemoveBandSubject.subscribe((band) => {

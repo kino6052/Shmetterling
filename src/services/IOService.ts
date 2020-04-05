@@ -1,4 +1,5 @@
 import Mousetrap from "mousetrap";
+import { openFullscreen, closeFullscreen } from "../utils/utils";
 import { InitSubject } from "./YouTubeService";
 import {
   IsIdleSubject,
@@ -25,11 +26,16 @@ InitSubject.subscribe(() => {
     NextSongSubject.next();
   });
 
+  Mousetrap.bind("f", function () {
+    openFullscreen();
+  });
+
   Mousetrap.bind("left", function () {
     PrevSongSubject.next();
   });
 
   Mousetrap.bind(["esc", "escape"], function () {
+    closeFullscreen();
     IsIdleSubject.next(true);
     ShouldShowMenuSubject.next(false);
   });

@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { Overlay } from "./Menus";
 import { useSharedState } from "../utils/utils";
 import { IsLoadingSubject } from "../services/PlayerService";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { Loader } from "./Loader";
 
 const PlayerWrapper = styled.div<{ isLoading: boolean }>`
   width: 100%;
@@ -30,6 +30,7 @@ export const Player: React.SFC = (props) => {
   const [isLoading] = useSharedState(IsLoadingSubject);
   return (
     <PlayerWrapper isLoading={isLoading}>
+      <Loader />
       <Overlay />
       <div id="player">Player One</div>
     </PlayerWrapper>

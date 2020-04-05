@@ -15,6 +15,7 @@ import {
   NextSongSubject,
   ShouldShowMenuSubject,
 } from "../services/PlayerService";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const OverlayWrapper = styled.div`
   color: white;
