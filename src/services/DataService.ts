@@ -33,43 +33,24 @@ const MR_OIZO_SONGS = ["240921811081"];
 
 const generate = () => MR_OIZO_SONGS.map((id) => ({ name: MR_OIZO.name, id }));
 
+const DEFAULT_VIDEO: ICurrentVideo = {
+  id: "",
+  name: "Schmetterling",
+  song_title: "Music Video Radio",
+  source_data: "",
+};
+
 export const AddBandSubject = new Subject<IArtist>("AddBandSubject");
 export const RemoveBandSubject = new Subject<IArtist>("RemoveBandSubject");
-export const InputSubject = new BehaviorSubject<string>("", "InputSubject");
-export const ArtistSubject = new BehaviorSubject<IArtist[]>(
-  [],
-  "ArtistSubject"
-);
-export const RelatedArtistsSubject = new BehaviorSubject<IArtist[]>(
-  [],
-  "RelatedArtistsSubject"
-);
-export const PlayListSubject = new BehaviorSubject<IArtist[]>(
-  [MR_OIZO],
-  "PlayListSubject"
-);
-export const MusicVideoSubject = new BehaviorSubject<IMusicVideo[]>(
-  generate(),
-  "MusicVideoSubject"
-);
-export const MusicVideoIndexSubject = new BehaviorSubject<number>(
-  0,
-  "MusicVideoIndexSubject"
-);
-export const CurrentVideoSubject = new BehaviorSubject<ICurrentVideo | null>(
-  {
-    id: "",
-    name: "Schmetterling",
-    song_title: "Music Video Radio",
-    source_data: "",
-  },
-  "CurrentVideoSubject"
-);
-export const IsFetchingSubject = new BehaviorSubject<boolean>(
-  false,
-  "IsFetchingSubject"
-);
+export const InputSubject = new BehaviorSubject<string>("");
+export const ArtistSubject = new BehaviorSubject<IArtist[]>([]);
+export const RelatedArtistsSubject = new BehaviorSubject<IArtist[]>([]);
+export const PlayListSubject = new BehaviorSubject<IArtist[]>([MR_OIZO]);
+export const MusicVideoSubject = new BehaviorSubject<IMusicVideo[]>(generate());
+export const MusicVideoIndexSubject = new BehaviorSubject<number>(0);
+export const IsFetchingSubject = new BehaviorSubject<boolean>(false);
 export const ErrorSubject = new Subject<string>();
+export const CurrentVideoSubject = new BehaviorSubject(DEFAULT_VIDEO);
 
 export const searchArtist = (query: string) => {
   ArtistSubject.next([]);
