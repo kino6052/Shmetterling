@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
-import { Overlay } from "./Menus";
+import { Overlay } from "./Overlay";
 import { useSharedState } from "../utils/utils";
 import { IsLoadingSubject } from "../services/PlayerService";
 import { Loader } from "./Loader";
@@ -9,6 +9,7 @@ const PlayerWrapper = styled.div<{ isLoading: boolean }>`
   width: 100%;
   height: 100vh;
   #player {
+    transition: 1s;
     display: flex;
     position: fixed;
     flex-direction: row;

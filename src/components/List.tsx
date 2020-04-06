@@ -1,17 +1,31 @@
 import styled from "styled-components";
 import * as React from "react";
-import { getVW } from "../utils/utils";
-import { Delete } from "@material-ui/icons";
+import { getVW, getVWString } from "../utils/utils";
+import { Delete, FullscreenExitOutlined } from "@material-ui/icons";
 import { RemoveBandSubject } from "../services/DataService";
 
 export const ListContainerWrapper = styled.div`
   margin: 0;
-  /* overflow-y: scroll; */
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  width: 100%;
+  height: ${getVWString(382)};
+  overflow-y: scroll;
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar {
+    width: ${getVW(16)}vw;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+  }
   h4 {
-    margin: ${getVW(16)}vw;
+    margin: 0;
+    margin-bottom: ${getVW(24)}vw;
+    text-align: left;
   }
 `;
 
@@ -21,9 +35,10 @@ export interface IListItem {
 }
 
 export const ListItemWrapper = styled.div`
-  height: ${getVW(68)}vw;
+  box-sizing: border-box;
+  padding: ${getVW(36)}vw;
   margin: ${getVW(16)}vw 0;
-  width: ${getVW(418)}vw;
+  width: ${getVWString(502)};
   display: flex;
   justify-content: space-between;
   align-items: center;

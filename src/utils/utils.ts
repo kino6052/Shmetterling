@@ -8,7 +8,8 @@ import {
 import { skip, tap, debounceTime } from "rxjs/operators";
 import { DEFAULT_DELAY } from "../constants";
 
-export const getVW = (value: number) => (value / 1440) * 100;
+export const getVW = (value: number) => (value / 1435) * 100;
+export const getVWString = (value: number) => `${getVW(value)}vw`;
 
 export const MARGIN = getVW(597);
 export const BLUE = "#26BEFF";

@@ -6,10 +6,10 @@
     "src/services/RouteService.ts",
     "src/services/react-app-env.d.ts",
     "src/components/Pane.tsx",
-    "src/components/SearchScreen.tsx",
+    "src/components/SearchScreenDrawer.tsx",
     "src/services/YouTubeService.tsx",
     "src/services/PlayerService.ts",
-    "src/components/Menus.tsx",
+    "src/components/Overlay.tsx",
     "src/components/List.tsx",
     "src/services/DataService.ts"
   ],

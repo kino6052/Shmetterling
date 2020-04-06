@@ -22,7 +22,9 @@ export const IsPlayingSubject = new BehaviorSubject<boolean>(
 export const NextSongSubject = new Subject("NextSongSubject").pipe(
   throttleTime(DEFAULT_DELAY)
 ) as ISubject<unknown>;
+
 export const PrevSongSubject = new Subject("PrevSongSubject");
+
 export const IsLoadingSubject = new BehaviorSubject<boolean>(
   true,
   "IsLoadingSubject"

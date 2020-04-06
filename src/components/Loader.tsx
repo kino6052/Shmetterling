@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { IsLoadingSubject } from "../services/PlayerService";
-import { useSharedState } from "../utils/utils";
+import { useSharedState, getVW } from "../utils/utils";
 
 const LoaderWrapper = styled.div<{ isLoading: boolean }>`
   display: ${({ isLoading }) => (isLoading ? "flex" : "none")};
@@ -15,7 +15,12 @@ const LoaderWrapper = styled.div<{ isLoading: boolean }>`
   justify-content: center;
   .loader {
     z-index: 100;
+    height: ${getVW(100)}vw!important;
+    width: ${getVW(100)}vw!important;
     color: red;
+    svg {
+      height: ${getVW(100)}vw;
+    }
   }
 `;
 
@@ -23,7 +28,7 @@ export const Loader: React.SFC = () => {
   const [isLoading] = useSharedState(IsLoadingSubject);
   return (
     <LoaderWrapper isLoading={isLoading}>
-      <CircularProgress size={100} classes={{ root: "loader" }} />
+      <CircularProgress classes={{ root: "loader" }} />
     </LoaderWrapper>
   );
 };

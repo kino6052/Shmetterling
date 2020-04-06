@@ -57,7 +57,12 @@ export const MusicVideoIndexSubject = new BehaviorSubject<number>(
   "MusicVideoIndexSubject"
 );
 export const CurrentVideoSubject = new BehaviorSubject<ICurrentVideo | null>(
-  null,
+  {
+    id: "",
+    name: "Schmetterling",
+    song_title: "Music Video Radio",
+    source_data: "",
+  },
   "CurrentVideoSubject"
 );
 export const IsFetchingSubject = new BehaviorSubject<boolean>(

@@ -45,7 +45,7 @@ export function useScript(src) {
         script.remove();
 
         setState({
-          loaded: true,
+          loaded: false,
           error: true,
         });
       };
