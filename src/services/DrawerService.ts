@@ -47,20 +47,13 @@ InitSubject.subscribe(() => {
     ([shouldShow, route]) => {
       const isMain = route === Route.Main;
       const isAdd = route === Route.Add;
-      if (shouldShow) {
-        if (isMain) {
-          SearchDrawer.close();
-          LeftDrawer.open();
-        } else if (isAdd) {
-          LeftDrawer.close();
-          SearchDrawer.open();
-        }
-        RightDrawer.open();
-      } else {
-        LeftDrawer.close();
-        SearchDrawer.close();
-        RightDrawer.close();
-      }
+      LeftDrawer.close();
+      SearchDrawer.close();
+      RightDrawer.close();
+      if (!shouldShow) return;
+      if (isMain) LeftDrawer.open();
+      else if (isAdd) SearchDrawer.open();
+      RightDrawer.open();
     }
   );
 });
