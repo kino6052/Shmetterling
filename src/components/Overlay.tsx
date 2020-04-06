@@ -16,7 +16,13 @@ const OverlayWrapper = styled.div<{ isBlurred: boolean }>`
     flex-direction: row;
     overflow: hidden;
     transition: 1s;
-    ${isBlurred && `backdrop-filter: blur(${getVWString(20)})`}
+    ${
+      isBlurred &&
+      `
+        backdrop-filter: blur(${getVWString(20)});
+        background-color: rgba(0,0,0,0.5);  
+      `
+    }
   `}
 `;
 
