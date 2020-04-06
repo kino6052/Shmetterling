@@ -1,6 +1,7 @@
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject, combineLatest } from "rxjs";
 import { InitSubject } from "./YouTubeService";
 import { ShouldShowMenuSubject } from "./PlayerService";
+import { RouteSubject, Route } from "./RouteService";
 
 export class Drawer {
   position = new BehaviorSubject(0);
@@ -38,16 +39,28 @@ export class Drawer {
 }
 
 export const LeftDrawer = new Drawer(-70, 0, 0.5);
+export const SearchDrawer = new Drawer(-70, 0, 0.5);
 export const RightDrawer = new Drawer(120, 50, 0.5);
 
 InitSubject.subscribe(() => {
-  ShouldShowMenuSubject.subscribe((shouldShow) => {
-    if (shouldShow) {
-      LeftDrawer.open();
-      RightDrawer.open();
-    } else {
-      LeftDrawer.close();
-      RightDrawer.close();
+  combineLatest(ShouldShowMenuSubject, RouteSubject).subscribe(
+    ([shouldShow, route]) => {
+      const isMain = route === Route.Main;
+      const isAdd = route === Route.Add;
+      if (shouldShow) {
+        if (isMain) {
+          SearchDrawer.close();
+          LeftDrawer.open();
+        } else if (isAdd) {
+          LeftDrawer.close();
+          SearchDrawer.open();
+        }
+        RightDrawer.open();
+      } else {
+        LeftDrawer.close();
+        SearchDrawer.close();
+        RightDrawer.close();
+      }
     }
-  });
+  );
 });

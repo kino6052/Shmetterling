@@ -8,18 +8,20 @@ export const ListContainerWrapper = styled.div`
   margin: 0;
   display: flex;
   flex-direction: column;
-  height: ${getVWString(382)};
+  height: ${getVWString(274)};
   overflow-y: scroll;
   &::-webkit-scrollbar-track {
-    // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: transparent;
   }
   &::-webkit-scrollbar {
-    width: ${getVW(16)}vw;
+    width: ${getVW(8)}vw;
     background-color: transparent;
+    border-radius: ${getVW(100)}vw;
+    border: 1px solid white;
   }
   &::-webkit-scrollbar-thumb {
     background-color: white;
+    border-radius: ${getVW(100)}vw;
   }
   h4 {
     margin: 0;
@@ -35,7 +37,7 @@ export interface IListItem {
 
 export const ListItemWrapper = styled.div`
   box-sizing: border-box;
-  margin: ${getVW(8)}vw 0;
+  margin: 0 ${getVW(8)}vw ${getVW(8)}vw 0;
   width: ${getVWString(501.97)};
   height: ${getVWString(81.66)};
   padding: ${getVWString(23)};
@@ -65,7 +67,6 @@ export const ListItemWrapper = styled.div`
   }
   .extra {
     font-size: ${getVW(16)}vw;
-    margin: 0 ${getVW(24)}vw;
   }
 `;
 
@@ -92,16 +93,7 @@ export const ListContainer: React.SFC<{
   return (
     <ListContainerWrapper>
       {heading && <h4>{heading}</h4>}
-      {[
-        ...items,
-        ...items,
-        ...items,
-        ...items,
-        ...items,
-        ...items,
-        ...items,
-        ...items,
-      ].map((band) => (
+      {items.map((band) => (
         <ListItem band={band} description="3 songs">
           <Delete
             onClick={() => {

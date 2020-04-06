@@ -4,6 +4,7 @@ import { ShouldShowMenuSubject } from "../services/PlayerService";
 import { useSharedState, getVWString } from "../utils/utils";
 import { BandListDrawer } from "./drawers/BandListDrawer";
 import { MainDrawer } from "./drawers/MainDrawer";
+import { SearchScreenDrawer } from "./drawers/SearchScreenDrawer";
 
 const OverlayWrapper = styled.div<{ isBlurred: boolean }>`
   ${({ isBlurred }) => `
@@ -32,7 +33,7 @@ export const Overlay: React.SFC = () => {
     <OverlayWrapper isBlurred={isBlurred}>
       <MainDrawer />
       <BandListDrawer />
-      {/* <SearchScreenDrawer /> */}
+      <SearchScreenDrawer />
     </OverlayWrapper>
   );
 };

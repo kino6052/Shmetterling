@@ -1,161 +1,113 @@
-import { Add, ArrowBack } from "@material-ui/icons";
+import { IconButton } from "@material-ui/core";
+import { ArrowBackOutlined, MusicVideo } from "@material-ui/icons";
 import * as React from "react";
 import styled from "styled-components";
-import {
-  AddBandSubject,
-  ArtistSubject,
-  InputSubject,
-  IsFetchingSubject,
-  PlayListSubject,
-  RelatedArtistsSubject,
-} from "../../services/DataService";
-import { Route, RouteSubject } from "../../services/RouteService";
-import { getVW, useSharedState } from "../../utils/utils";
-import { IListItem, ListContainerWrapper, ListItem } from "../List";
-import { Spacer } from "../Spacer";
+import { PlayListSubject } from "../../services/DataService";
+import { SearchDrawer } from "../../services/DrawerService";
+import { BLUE, getVW, getVWString, useSharedState } from "../../utils/utils";
+import { ListContainer } from "../List";
+import { DrawerWrapper } from "./Drawer";
+import { RouteSubject, Route } from "../../services/RouteService";
 
-const SearchScreenWrapper = styled.div<{ currentRoute: Route }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-
-  .container {
-    display: flex;
-    flex: 1;
-    box-sizing: border-box;
-    margin: ${getVW(24)}vw;
-    flex-direction: column;
-    align-items: flex-start;
-    height: ${getVW(800)}vw;
-    
-    h4 {
-      font-size: ${getVW(24)}vw;
-    }
-
-    .arrow-back {
-      font-size: ${getVW(24)}vw;
-    }
-
-    input {
-      font-size: ${getVW(120)}vw;
-      width: 100%;
-      color: white;
-      background: none;
-      border: none;
-      // border-bottom: ${getVW(8)}vw solid white;
-      &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-      }
-    }
-  }
- 
-`;
-
-const BandWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: ${getVW(500)}vw;
-`;
-
-const BandPanelWrapper = styled.div`
+const MainDrawerWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
   width: 100%;
-  overflow: hidden;
-  margin-right: ${getVW(24)}vw;
-  .progress {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
+  height: 56.25vw;
+  padding: ${getVWString(38)} ${getVWString(86)};
+  box-sizing: border-box;
+`;
+
+const ControlsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  .icon {
+    color: white;
+    height: ${getVW(102)}vw;
+    width: ${getVW(102)}vw;
+    padding: 0;
     svg {
-      height: ${getVW(100)}vw;
+      font-size: ${getVW(102)}vw;
     }
   }
 `;
 
-export const SearchListContainer: React.SFC<{
-  heading: string;
-  items: IListItem[];
-}> = (props) => {
-  const { items = [], heading = "" } = props;
-  return (
-    <ListContainerWrapper>
-      {heading && <h4>{heading}</h4>}
-      {items.map((band) => (
-        <ListItem band={band}>
-          <Add
-            onClick={() => {
-              AddBandSubject.next(band);
-            }}
-          />
-        </ListItem>
-      ))}
-    </ListContainerWrapper>
-  );
-};
+const SearchWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: ${getVWString(493)};
+  height: ${getVWString(71)};
+  input {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: ${getVWString(4)} solid white;
+    &::placeholder {
+      color: #ffffff66;
+    }
+    color: white;
+    font-size: ${getVWString(64)};
+    line-height: ${getVWString(75)};
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: ${getVWString(40)};
+  }
+`;
+
+const LogoWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: ${getVWString(247)};
+  h4 {
+    margin: 0;
+    color: white;
+    font-size: ${getVWString(26)};
+  }
+  .logo-icon {
+    height: ${getVWString(50)};
+    width: ${getVWString(50)};
+    color: ${BLUE};
+    svg {
+      color: ${BLUE};
+      height: ${getVWString(50)};
+      width: ${getVWString(50)};
+    }
+  }
+  .back {
+    color: white;
+    svg {
+      color: white;
+    }
+  }
+`;
 
 export const SearchScreenDrawer: React.SFC = () => {
-  const [playlist] = useSharedState(PlayListSubject);
-  const [artists] = useSharedState(ArtistSubject);
-  const [similarArtists] = useSharedState(RelatedArtistsSubject);
-  const [isFetching] = useSharedState(IsFetchingSubject);
-  const [route] = useSharedState(RouteSubject);
-  const hasSimilarArtists = similarArtists.length > 0;
+  const [playList] = useSharedState(PlayListSubject);
+  const [x] = useSharedState(SearchDrawer.position);
   return (
-    <SearchScreenWrapper currentRoute={route}>
-      <div className="container">
-        <h4 className="blue" onClick={() => RouteSubject.next(Route.Main)}>
-          Schmetterling{" "}
-          <span>
-            <ArrowBack classes={{ root: "arrow-back" }} />
-          </span>
-        </h4>
-        <Spacer height={70} />
-        <input
-          placeholder="Enter Band Name"
-          onChange={({ target: { value } }) => {
-            InputSubject.next(value);
-          }}
-        />
-        <Spacer height={70} />
-        <BandWrapper>
-          {/* <BandPanelWrapper>
-            {isFetching && <CircularProgress classes={{ root: "progress" }} />}
-            {!isFetching && (
-              <SearchListContainer heading="Bands" items={artists} />
-            )}
-          </BandPanelWrapper> */}
-        </BandWrapper>
-      </div>
-      <div className="container">
-        {/* <h4 className="blue" onClick={() => RouteSubject.next(Route.Main)}>
-          Current Playlist
-        </h4> */}
-        <Spacer height={70} />
-        <BandWrapper>
-          <BandPanelWrapper>
-            {/* {isFetching && <CircularProgress classes={{ root: "progress" }} />}
-            {!isFetching && (
-              <SearchListContainer heading="Bands" items={artists} />
-            )} */}
-            {/* <ListContainer items={playlist} /> */}
-            {/* {!isFetching && (
-              <SearchListContainer
-                heading="Similar Bands"
-                items={similarArtists}
-              />
-            )} */}
-          </BandPanelWrapper>
-        </BandWrapper>
-      </div>
-    </SearchScreenWrapper>
+    <DrawerWrapper x={x} time={SearchDrawer.time}>
+      <MainDrawerWrapper>
+        <LogoWrapper>
+          <MusicVideo classes={{ root: "logo-icon" }} />
+          <h4 className="blue">Schmetterling</h4>
+          <IconButton
+            classes={{ root: "back" }}
+            onClick={() => RouteSubject.next(Route.Main)}
+          >
+            <ArrowBackOutlined />
+          </IconButton>
+        </LogoWrapper>
+        <SearchWrapper>
+          <input placeholder="Search for Band" />
+        </SearchWrapper>
+        <ListContainer heading="Search Results" items={playList} />
+      </MainDrawerWrapper>
+    </DrawerWrapper>
   );
 };

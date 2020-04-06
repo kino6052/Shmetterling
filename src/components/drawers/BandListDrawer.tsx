@@ -11,7 +11,12 @@ import { DrawerWrapper } from "./Drawer";
 import { ListContainer } from "../List";
 import styled from "styled-components";
 import { IconButton } from "@material-ui/core";
-import { FullscreenExitOutlined, FullscreenOutlined } from "@material-ui/icons";
+import {
+  FullscreenExitOutlined,
+  FullscreenOutlined,
+  AddOutlined,
+} from "@material-ui/icons";
+import { RouteSubject, Route } from "../../services/RouteService";
 
 const BandListDrawerWrapper = styled.div`
   display: flex;
@@ -55,6 +60,54 @@ const TopWrapper = styled.div`
   width: 100%;
 `;
 
+export const AddButton = styled.button`
+  box-sizing: border-box;
+  margin: 0 ${getVWString(16)} ${getVWString(8)} 0;
+  width: ${getVWString(501.97)};
+  height: ${getVWString(81.66)};
+  border: ${getVWString(2)} dashed white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  background-blend-mode: overlay;
+  transition: 1s;
+  &:hover {
+    transform: scale(1.1);
+  }
+  .content {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    .add {
+      margin-right: ${getVWString(8)};
+      svg {
+        color: white;
+        height: ${getVWString(18)};
+        width: ${getVWString(18)};
+        font-size: ${getVWString(18)};
+      }
+    }
+    h4 {
+      margin: 0;
+      color: white;
+      font-size: ${getVWString(18)};
+      line-height: ${getVWString(21)};
+    }
+    p {
+      margin: 0;
+      color: ${BLUE};
+      font-size: ${getVWString(12)};
+      line-height: ${getVWString(14)};
+      font-weight: bold;
+    }
+  }
+  .extra {
+    font-size: ${getVWString(16)}vw;
+  }
+`;
+
 export const BandListDrawer: React.SFC = () => {
   const [currentVideo] = useSharedState(CurrentVideoSubject);
   const [isPlaying] = useSharedState(IsPlayingSubject);
@@ -70,6 +123,14 @@ export const BandListDrawer: React.SFC = () => {
             {num} Band{num !== 1 && "s"}
           </h1>
         </TopWrapper>
+        <AddButton onClick={() => RouteSubject.next(Route.Add)}>
+          <div className="content">
+            <IconButton className="add">
+              <AddOutlined />
+            </IconButton>
+            <h4>Add Band</h4>
+          </div>
+        </AddButton>
         <ListContainer items={playList} />
         <IconButton classes={{ root: "full-screen" }} aria-label="Full-screen">
           <FullscreenOutlined />
