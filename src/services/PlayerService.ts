@@ -3,6 +3,7 @@ import {
   CurrentVideoSubject,
   ICurrentVideo,
   InputSubject,
+  ErrorSubject,
 } from "./DataService";
 import {
   InitSubject,
@@ -50,17 +51,29 @@ export const toggleIsPlaying = () => {
 
 export const pause = () => {
   const [player] = PlayerRefSubject.getValue();
-  player.pauseVideo();
+  try {
+    player.pauseVideo();
+  } catch (e) {
+    ErrorSubject.next(e.message);
+  }
 };
 
 export const play = () => {
   const [player] = PlayerRefSubject.getValue();
-  player.playVideo();
+  try {
+    player.playVideo();
+  } catch (e) {
+    ErrorSubject.next(e.message);
+  }
 };
 
 export const loadVideo = (currentVideo: ICurrentVideo) => {
   const [player] = PlayerRefSubject.getValue();
-  player.loadVideoById(currentVideo.source_data);
+  try {
+    player.loadVideoById(currentVideo.source_data);
+  } catch (e) {
+    ErrorSubject.next(e.message);
+  }
 };
 
 InitSubject.subscribe(() => {

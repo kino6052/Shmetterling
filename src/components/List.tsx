@@ -1,7 +1,7 @@
-import { Delete } from "@material-ui/icons";
+import { Delete, Add } from "@material-ui/icons";
 import * as React from "react";
 import styled from "styled-components";
-import { RemoveBandSubject } from "../services/DataService";
+import { RemoveBandSubject, AddBandSubject } from "../services/DataService";
 import { BLUE, getVWString } from "../utils/utils";
 
 export const ListContainerWrapper = styled.div`
@@ -98,6 +98,27 @@ export const ListContainer: React.SFC<{
           <Delete
             onClick={() => {
               RemoveBandSubject.next(band);
+            }}
+          />
+        </ListItem>
+      ))}
+    </ListContainerWrapper>
+  );
+};
+
+export const SearchResultListContainer: React.SFC<{
+  heading?: string;
+  items: IListItem[];
+}> = (props) => {
+  const { items = [], heading = "" } = props;
+  return (
+    <ListContainerWrapper>
+      {heading && <h4>{heading}</h4>}
+      {items.map((band) => (
+        <ListItem band={band} description="3 songs">
+          <Add
+            onClick={() => {
+              AddBandSubject.next(band);
             }}
           />
         </ListItem>

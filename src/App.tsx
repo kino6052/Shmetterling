@@ -16,7 +16,7 @@ export default function App() {
     <div className="App">
       <StyledThemeProvider theme={{ scenario }}>
         <ThemeProvider theme={theme}>
-          <Player />}
+          <Player />
         </ThemeProvider>
       </StyledThemeProvider>
     </div>

@@ -34,6 +34,8 @@ export const PlayerErrorSubject = new BehaviorSubject<{
 
 export const useYouTubeScript = async () => {
   const [loaded] = useScript("https://www.youtube.com/player_api");
+  const [ref] = PlayerRefSubject.getValue();
+  if (ref) return;
   const interval = setInterval(() => {
     try {
       // @ts-ignore

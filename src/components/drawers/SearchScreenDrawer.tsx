@@ -2,10 +2,14 @@ import { IconButton } from "@material-ui/core";
 import { ArrowBackOutlined, MusicVideo } from "@material-ui/icons";
 import * as React from "react";
 import styled from "styled-components";
-import { PlayListSubject } from "../../services/DataService";
+import {
+  PlayListSubject,
+  InputSubject,
+  ArtistSubject,
+} from "../../services/DataService";
 import { SearchDrawer } from "../../services/DrawerService";
 import { BLUE, getVWString, useSharedState } from "../../utils/utils";
-import { ListContainer } from "../List";
+import { ListContainer, SearchResultListContainer } from "../List";
 import { DrawerWrapper } from "./Drawer";
 import { RouteSubject, Route } from "../../services/RouteService";
 
@@ -88,7 +92,7 @@ const LogoWrapper = styled.div`
 `;
 
 export const SearchScreenDrawer: React.SFC = () => {
-  const [playList] = useSharedState(PlayListSubject);
+  const [artist] = useSharedState(ArtistSubject);
   const [x] = useSharedState(SearchDrawer.position);
   return (
     <DrawerWrapper x={x} time={SearchDrawer.time}>
@@ -104,9 +108,12 @@ export const SearchScreenDrawer: React.SFC = () => {
           </IconButton>
         </LogoWrapper>
         <SearchWrapper>
-          <input placeholder="Search for Band" />
+          <input
+            placeholder="Search for Band"
+            onChange={({ target: { value = "" } }) => InputSubject.next(value)}
+          />
         </SearchWrapper>
-        <ListContainer heading="Search Results" items={playList} />
+        <SearchResultListContainer heading="Search Results" items={artist} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );
