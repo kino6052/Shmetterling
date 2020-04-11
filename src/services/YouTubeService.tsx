@@ -32,10 +32,17 @@ export const PlayerErrorSubject = new BehaviorSubject<{
   e: unknown;
 }>({ id: 0, e: null }, "PlayerErrorSubject");
 
-export const useYouTubeScript = () => {
+export const useYouTubeScript = async () => {
   const [loaded] = useScript("https://www.youtube.com/player_api");
-  setTimeout(() => {
-    YouTubeScriptLoadedStateSubject.next(loaded);
+  const interval = setInterval(() => {
+    try {
+      // @ts-ignore
+      new YT.Player("initialize");
+      clearInterval(interval);
+      YouTubeScriptLoadedStateSubject.next(loaded);
+    } catch (e) {
+      console.warn("Retrying", e.message);
+    }
   }, 500);
 };
 
