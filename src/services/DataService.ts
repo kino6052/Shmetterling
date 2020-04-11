@@ -61,10 +61,10 @@ export const searchArtist = (query: string) => {
     .then((res) => {
       return res.json();
     })
-    .then(({ artist = {}, relatedArtists = [] }) => {
+    .then(({ artist = {}, matchingArtists = [], relatedArtists = [] }) => {
       IsFetchingSubject.next(false);
       if (JSON.stringify(artist) === "{}") return;
-      ArtistSubject.next([artist]);
+      ArtistSubject.next([artist, ...matchingArtists]);
       RelatedArtistsSubject.next(relatedArtists);
     })
     .catch((e) => {

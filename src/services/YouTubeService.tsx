@@ -35,7 +35,7 @@ export const PlayerErrorSubject = new BehaviorSubject<{
 export const useYouTubeScript = async () => {
   const [loaded] = useScript("https://www.youtube.com/player_api");
   const [ref] = PlayerRefSubject.getValue();
-  if (ref) return;
+  if (ref) return; // Reference to a player already exists;
   const interval = setInterval(() => {
     try {
       // @ts-ignore
