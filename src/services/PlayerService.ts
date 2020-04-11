@@ -40,7 +40,7 @@ export const __ShouldShowMenuSubject = combineLatest(
   RouteSubject
 ).pipe(
   map(([isIdle, isPlaying, route]) => {
-    return !isIdle || !isPlaying || route === Route.Add;
+    return !isIdle || !isPlaying || [Route.Add, Route.Similar].includes(route);
   })
 );
 

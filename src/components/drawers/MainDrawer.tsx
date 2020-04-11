@@ -1,24 +1,23 @@
-import * as React from "react";
-import { DrawerWrapper } from "./Drawer";
-import { useSharedState, BLUE, getVWString } from "../../utils/utils";
-import { LeftDrawer } from "../../services/DrawerService";
-import { CurrentVideoSubject } from "../../services/DataService";
+import { IconButton } from "@material-ui/core";
 import {
-  IsPlayingSubject,
-  PrevSongSubject,
-  NextSongSubject,
-} from "../../services/PlayerService";
-import { Spacer } from "../Spacer";
-import styled from "styled-components";
-import {
-  SkipPreviousOutlined,
-  PlayArrowOutlined,
   PauseOutlined,
+  PlayArrowOutlined,
   SkipNextOutlined,
-  MusicVideo,
+  SkipPreviousOutlined,
   ThumbDown,
 } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
+import * as React from "react";
+import styled from "styled-components";
+import { CurrentVideoSubject } from "../../services/DataService";
+import { MainDrawer as MainDrawerObject } from "../../services/DrawerService";
+import {
+  IsPlayingSubject,
+  NextSongSubject,
+  PrevSongSubject,
+} from "../../services/PlayerService";
+import { BLUE, getVWString, useSharedState } from "../../utils/utils";
+import { Logo } from "../Logo";
+import { DrawerWrapper } from "./Drawer";
 
 const MainDrawerWrapper = styled.div`
   display: flex;
@@ -82,40 +81,14 @@ const CurrentBandWrapper = styled.div`
   }
 `;
 
-const LogoWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: ${() => getVWString(247)};
-  h4 {
-    margin: 0;
-    color: white;
-    font-size: ${() => getVWString(26)};
-  }
-  .logo-icon {
-    height: ${() => getVWString(50)};
-    width: ${() => getVWString(50)};
-    color: ${BLUE};
-    svg {
-      color: ${BLUE};
-      height: ${() => getVWString(50)};
-      width: ${() => getVWString(50)};
-    }
-  }
-`;
-
-export const MainDrawer: React.SFC = (props) => {
+export const MainDrawer: React.SFC = () => {
   const [currentVideo] = useSharedState(CurrentVideoSubject);
   const [isPlaying] = useSharedState(IsPlayingSubject);
-  const [x] = useSharedState(LeftDrawer.position);
+  const [x] = useSharedState(MainDrawerObject.position);
   return (
-    <DrawerWrapper x={x} time={LeftDrawer.time}>
+    <DrawerWrapper x={x} time={MainDrawerObject.time}>
       <MainDrawerWrapper>
-        <LogoWrapper>
-          <MusicVideo classes={{ root: "logo-icon" }} />
-          <h4 className="blue">Schmetterling</h4>
-        </LogoWrapper>
+        <Logo />
         <CurrentBandWrapper>
           <p>You're watching</p>
           <h1>{currentVideo && currentVideo.name}</h1>

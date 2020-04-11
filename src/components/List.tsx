@@ -3,6 +3,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { RemoveBandSubject, AddBandSubject } from "../services/DataService";
 import { BLUE, getVWString } from "../utils/utils";
+import { MenuSubject } from "./lists/CurrentBandsList";
 
 export const ListContainerWrapper = styled.div`
   margin: 0;
@@ -82,27 +83,6 @@ export const ListItem: React.SFC<{ band: IListItem; description: string }> = (
       </div>
       <div className="extra">{children}</div>
     </ListItemWrapper>
-  );
-};
-
-export const ListContainer: React.SFC<{
-  heading?: string;
-  items: IListItem[];
-}> = (props) => {
-  const { items = [], heading = "" } = props;
-  return (
-    <ListContainerWrapper>
-      {heading && <h4>{heading}</h4>}
-      {items.map((band) => (
-        <ListItem band={band} description="3 songs">
-          <Delete
-            onClick={() => {
-              RemoveBandSubject.next(band);
-            }}
-          />
-        </ListItem>
-      ))}
-    </ListContainerWrapper>
   );
 };
 

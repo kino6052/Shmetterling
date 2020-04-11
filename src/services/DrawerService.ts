@@ -38,22 +38,26 @@ export class Drawer {
   }
 }
 
-export const LeftDrawer = new Drawer(-70, 0, 0.5);
+export const MainDrawer = new Drawer(-70, 0, 0.5);
 export const SearchDrawer = new Drawer(-70, 0, 0.5);
-export const RightDrawer = new Drawer(120, 50, 0.5);
+export const CurrentPlaylistDrawer = new Drawer(120, 50, 0.5);
+export const SimilarBandsDrawer = new Drawer(-70, 0, 0.5);
 
 InitSubject.subscribe(() => {
   combineLatest(ShouldShowMenuSubject, RouteSubject).subscribe(
     ([shouldShow, route]) => {
       const isMain = route === Route.Main;
       const isAdd = route === Route.Add;
-      LeftDrawer.close();
+      const isSimilar = route === Route.Similar;
+      MainDrawer.close();
       SearchDrawer.close();
-      RightDrawer.close();
+      SimilarBandsDrawer.close();
+      CurrentPlaylistDrawer.close();
       if (!shouldShow) return;
-      if (isMain) LeftDrawer.open();
+      if (isMain) MainDrawer.open();
       else if (isAdd) SearchDrawer.open();
-      RightDrawer.open();
+      else if (isSimilar) SimilarBandsDrawer.open();
+      CurrentPlaylistDrawer.open();
     }
   );
 });

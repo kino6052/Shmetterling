@@ -6,9 +6,9 @@ import {
   PlayListSubject,
 } from "../../services/DataService";
 import { IsPlayingSubject } from "../../services/PlayerService";
-import { RightDrawer } from "../../services/DrawerService";
+import { CurrentPlaylistDrawer } from "../../services/DrawerService";
 import { DrawerWrapper } from "./Drawer";
-import { ListContainer } from "../List";
+import { ListContainer } from "../lists/CurrentBandsList";
 import styled from "styled-components";
 import { IconButton } from "@material-ui/core";
 import {
@@ -17,6 +17,7 @@ import {
   AddOutlined,
 } from "@material-ui/icons";
 import { RouteSubject, Route } from "../../services/RouteService";
+import { _Menu } from "../lists/CurrentBandsList";
 
 const BandListDrawerWrapper = styled.div`
   display: flex;
@@ -111,10 +112,10 @@ export const BandListDrawer: React.SFC = () => {
   const [currentVideo] = useSharedState(CurrentVideoSubject);
   const [isPlaying] = useSharedState(IsPlayingSubject);
   const [playList] = useSharedState(PlayListSubject);
-  const [x] = useSharedState(RightDrawer.position);
+  const [x] = useSharedState(CurrentPlaylistDrawer.position);
   const num = playList.length;
   return (
-    <DrawerWrapper x={x} time={RightDrawer.time}>
+    <DrawerWrapper x={x} time={CurrentPlaylistDrawer.time}>
       <BandListDrawerWrapper>
         <TopWrapper>
           <h4>Your Band List</h4>

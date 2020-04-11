@@ -1,5 +1,10 @@
 import { BehaviorSubject, Subject, shuffle } from "../utils/utils";
-import { debounceTime, filter, skip } from "rxjs/operators";
+import {
+  debounceTime,
+  filter,
+  skip,
+  distinctUntilChanged,
+} from "rxjs/operators";
 import { InitSubject, PlayerErrorSubject } from "./YouTubeService";
 import {
   NextSongSubject,
@@ -8,6 +13,7 @@ import {
 } from "./PlayerService";
 import { DEFAULT_DELAY } from "../constants";
 import { appendToSubjectValue } from "../utils/utils";
+import { RouteSubject, Route } from "./RouteService";
 
 export interface IArtist {
   name: string;
@@ -44,7 +50,11 @@ export const AddBandSubject = new Subject<IArtist>("AddBandSubject");
 export const RemoveBandSubject = new Subject<IArtist>("RemoveBandSubject");
 export const InputSubject = new BehaviorSubject<string>("");
 export const ArtistSubject = new BehaviorSubject<IArtist[]>([]);
-export const RelatedArtistsSubject = new BehaviorSubject<IArtist[]>([]);
+export const SelectedArtistSubject = new BehaviorSubject<string>("");
+export const RelatedArtistsSubject = new BehaviorSubject<[string, IArtist[]]>([
+  DEFAULT_VIDEO.name,
+  [],
+]);
 export const PlayListSubject = new BehaviorSubject<IArtist[]>([MR_OIZO]);
 export const MusicVideoSubject = new BehaviorSubject<IMusicVideo[]>(generate());
 export const MusicVideoIndexSubject = new BehaviorSubject<number>(0);
@@ -54,7 +64,7 @@ export const CurrentVideoSubject = new BehaviorSubject(DEFAULT_VIDEO);
 
 export const searchArtist = (query: string) => {
   ArtistSubject.next([]);
-  RelatedArtistsSubject.next([]);
+  // RelatedArtistsSubject.next([DEFAULT_VIDEO.name, []]);
   if (!query) return;
   IsFetchingSubject.next(true);
   fetch(`/artist?q=${query}`)
@@ -65,7 +75,8 @@ export const searchArtist = (query: string) => {
       IsFetchingSubject.next(false);
       if (JSON.stringify(artist) === "{}") return;
       ArtistSubject.next([artist, ...matchingArtists]);
-      RelatedArtistsSubject.next(relatedArtists);
+      const [curArtist] = RelatedArtistsSubject.getValue();
+      RelatedArtistsSubject.next([curArtist, relatedArtists]);
     })
     .catch((e) => {
       ErrorSubject.next(e.toString());
@@ -177,4 +188,20 @@ InitSubject.subscribe(() => {
   ErrorSubject.subscribe((e) => {
     console.warn(e);
   });
+
+  RouteSubject.pipe(filter((route) => route === Route.Similar)).subscribe(
+    () => {
+      const artist = SelectedArtistSubject.getValue();
+      RelatedArtistsSubject.next([artist, []]);
+      searchArtist(artist);
+    }
+  );
+
+  // SelectedArtistSubject.pipe(
+  //   skip(1),
+  //   distinctUntilChanged(),
+  //   debounceTime(DEFAULT_DELAY)
+  // ).subscribe((artist) => {
+
+  // });
 });
