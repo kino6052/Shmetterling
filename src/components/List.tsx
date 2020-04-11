@@ -1,31 +1,31 @@
-import styled from "styled-components";
+import { Delete } from "@material-ui/icons";
 import * as React from "react";
-import { getVW, getVWString, useSharedState, BLUE } from "../utils/utils";
-import { Delete, FullscreenExitOutlined } from "@material-ui/icons";
-import { RemoveBandSubject, MusicVideoSubject } from "../services/DataService";
+import styled from "styled-components";
+import { RemoveBandSubject } from "../services/DataService";
+import { BLUE, getVWString } from "../utils/utils";
 
 export const ListContainerWrapper = styled.div`
   margin: 0;
   display: flex;
   flex-direction: column;
-  height: ${getVWString(274)};
+  height: ${() => getVWString(274)};
   overflow-y: scroll;
   &::-webkit-scrollbar-track {
     background-color: transparent;
   }
   &::-webkit-scrollbar {
-    width: ${getVW(8)}vw;
+    width: ${() => getVWString(8)};
     background-color: transparent;
-    border-radius: ${getVW(100)}vw;
+    border-radius: ${() => getVWString(100)};
     border: 1px solid white;
   }
   &::-webkit-scrollbar-thumb {
     background-color: white;
-    border-radius: ${getVW(100)}vw;
+    border-radius: ${() => getVWString(100)};
   }
   h4 {
     margin: 0;
-    margin-bottom: ${getVW(24)}vw;
+    margin-bottom: ${() => getVWString(24)};
     text-align: left;
   }
 `;
@@ -37,10 +37,10 @@ export interface IListItem {
 
 export const ListItemWrapper = styled.div`
   box-sizing: border-box;
-  margin: 0 ${getVW(8)}vw ${getVW(8)}vw 0;
-  width: ${getVWString(501.97)};
-  height: ${getVWString(81.66)};
-  padding: ${getVWString(23)};
+  margin: 0 ${() => getVWString(8)}vw ${() => getVWString(8)}vw 0;
+  width: ${() => getVWString(501.97)};
+  height: ${() => getVWString(81.66)};
+  padding: ${() => getVWString(23)};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -54,19 +54,19 @@ export const ListItemWrapper = styled.div`
     h4 {
       margin: 0;
       color: white;
-      font-size: ${getVWString(18)};
-      line-height: ${getVWString(21)};
+      font-size: ${() => getVWString(18)};
+      line-height: ${() => getVWString(21)};
     }
     p {
       margin: 0;
       color: ${BLUE};
-      font-size: ${getVWString(12)};
-      line-height: ${getVWString(14)};
+      font-size: ${() => getVWString(12)};
+      line-height: ${() => getVWString(14)};
       font-weight: bold;
     }
   }
   .extra {
-    font-size: ${getVW(16)}vw;
+    font-size: ${() => getVWString(16)};
   }
 `;
 

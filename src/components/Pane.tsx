@@ -1,6 +1,6 @@
-import styled, { css } from "styled-components";
-import { getVW, BLUE } from "../utils/utils";
-import { RouteSubject, Route } from "../services/RouteService";
+import { css } from "styled-components";
+import { Route } from "../services/RouteService";
+import { BLUE, getVWString } from "../utils/utils";
 
 export const getPaneMixin = (currentRoute: Route, route: Route) => {
   const isSameRoute = route === currentRoute;
@@ -25,19 +25,19 @@ export const getPaneMixin = (currentRoute: Route, route: Route) => {
     width: ${width};
     height: 100%;
     text-align: left;
-    padding: 0 ${getVW(72)}vw;
+    padding: 0 ${() => getVWString(72)};
     p {
       margin: 0;
-      font-size: ${getVW(18)}vw;
+      font-size: ${() => getVWString(18)};
     }
     h1 {
       margin: 0;
-      font-size: ${getVW(64)}vw;
-      max-width: ${getVW(308)}vw;
+      font-size: ${() => getVWString(64)};
+      max-width: ${() => getVWString(308)};
       width: 100%;
     }
     h4 {
-      font-size: ${getVW(28)}vw;
+      font-size: ${() => getVWString(28)};
     }
     .blue {
       color: ${BLUE};

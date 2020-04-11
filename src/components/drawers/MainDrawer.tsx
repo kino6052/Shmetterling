@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DrawerWrapper } from "./Drawer";
-import { useSharedState, getVW, BLUE, getVWString } from "../../utils/utils";
+import { useSharedState, BLUE, getVWString } from "../../utils/utils";
 import { LeftDrawer } from "../../services/DrawerService";
 import { CurrentVideoSubject } from "../../services/DataService";
 import {
@@ -27,7 +27,7 @@ const MainDrawerWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 56.25vw;
-  padding: ${getVWString(38)} ${getVWString(86)};
+  padding: ${() => getVWString(38)} ${() => getVWString(86)};
   box-sizing: border-box;
 `;
 
@@ -37,11 +37,11 @@ const ControlsWrapper = styled.div`
   width: 100%;
   .icon {
     color: white;
-    height: ${getVW(102)}vw;
-    width: ${getVW(102)}vw;
+    height: ${() => getVWString(102)};
+    width: ${() => getVWString(102)};
     padding: 0;
     svg {
-      font-size: ${getVW(102)}vw;
+      font-size: ${() => getVWString(102)};
     }
   }
 `;
@@ -51,32 +51,32 @@ const CurrentBandWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   p {
-    font-size: ${getVWString(18)};
-    line-height: ${getVWString(21)};
+    font-size: ${() => getVWString(18)};
+    line-height: ${() => getVWString(21)};
     margin: 0;
-    margin-bottom: ${getVWString(48)};
+    margin-bottom: ${() => getVWString(48)};
   }
   h1 {
-    font-size: ${getVWString(64)};
-    line-height: ${getVWString(75)};
+    font-size: ${() => getVWString(64)};
+    line-height: ${() => getVWString(75)};
     font-weight: bold;
     margin: 0;
-    margin-bottom: ${getVWString(40)};
+    margin-bottom: ${() => getVWString(40)};
   }
   h4 {
-    font-size: ${getVWString(24)};
-    line-height: ${getVWString(28)};
+    font-size: ${() => getVWString(24)};
+    line-height: ${() => getVWString(28)};
     color: ${BLUE};
     margin: 0;
 
     .dislike {
       color: white;
-      height: ${getVWString(24)};
-      width: ${getVWString(24)};
+      height: ${() => getVWString(24)};
+      width: ${() => getVWString(24)};
       padding: 0;
-      margin-left: ${getVWString(24)};
+      margin-left: ${() => getVWString(24)};
       svg {
-        height: ${getVWString(24)};
+        height: ${() => getVWString(24)};
       }
     }
   }
@@ -87,20 +87,20 @@ const LogoWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: ${getVWString(247)};
+  width: ${() => getVWString(247)};
   h4 {
     margin: 0;
     color: white;
-    font-size: ${getVWString(26)};
+    font-size: ${() => getVWString(26)};
   }
   .logo-icon {
-    height: ${getVWString(50)};
-    width: ${getVWString(50)};
+    height: ${() => getVWString(50)};
+    width: ${() => getVWString(50)};
     color: ${BLUE};
     svg {
       color: ${BLUE};
-      height: ${getVWString(50)};
-      width: ${getVWString(50)};
+      height: ${() => getVWString(50)};
+      width: ${() => getVWString(50)};
     }
   }
 `;

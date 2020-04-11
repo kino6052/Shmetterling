@@ -9,7 +9,6 @@ const PlayerWrapper = styled.div<{ isLoading: boolean }>`
   width: 100%;
   height: 100vh;
   #player {
-    transition: 1s;
     display: flex;
     position: fixed;
     flex-direction: row;

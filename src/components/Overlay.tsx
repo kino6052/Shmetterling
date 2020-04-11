@@ -8,19 +8,24 @@ import { SearchScreenDrawer } from "./drawers/SearchScreenDrawer";
 
 const OverlayWrapper = styled.div<{ isBlurred: boolean }>`
   ${({ isBlurred }) => `
-    color: white;
+    width: 100vw; /* 90% of viewport vidth */
+    height: ${(9 / 16) * 100}; /* ratio = 9/16 * 90 = 50.625 */
+    max-height: 100vh;
+    max-width: ${(16 / 9) * 100}vh; /* 16/9 * 90 = 160 */
+    margin: auto;
     position: absolute;
+    top:0;bottom:0;
+    left:0;right:0;
+
+    color: white;
     z-index: 1;
-    width: 100%;
-    height: 100vh;
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    transition: 1s;
     ${
       isBlurred &&
       `
-        backdrop-filter: blur(${getVWString(20)});
+        backdrop-filter: blur(${() => getVWString(20)});
         background-color: rgba(0,0,0,0.5);  
       `
     }

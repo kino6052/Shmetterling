@@ -8,10 +8,48 @@ import {
 import { skip, tap, debounceTime } from "rxjs/operators";
 import { DEFAULT_DELAY } from "../constants";
 
-export const getVW = (value: number) => (value / 1435) * 100;
-export const getVWString = (value: number) => `${getVW(value)}vw`;
+const ASPECT_RATIO = 16 / 9;
 
-export const MARGIN = getVW(597);
+export const getWidthToHeightRatio = (
+  innerWidth: number,
+  innerHeight: number
+) => innerWidth / innerHeight;
+
+export enum WidthCaseScenario {
+  "Normal",
+  "DependentOnHeight",
+}
+
+export const getWidthCaseScenario = (ratio: number): WidthCaseScenario =>
+  ratio < ASPECT_RATIO
+    ? WidthCaseScenario.Normal
+    : WidthCaseScenario.DependentOnHeight;
+
+export const getDefaultCaseScenario = () => {
+  const { innerWidth = 0, innerHeight = 0 } = window || {};
+  const ratio = getWidthToHeightRatio(innerWidth, innerHeight);
+  return getWidthCaseScenario(ratio);
+};
+
+const DEFAULT_WIDTH = 1445;
+
+// export const getVW = (value: number) =>
+//   (value / (getWidthToHeightRatio() < 1 ? (1435 * 9) / 16 : 1435)) * 100;
+
+export const getVWString = (value: number) => {
+  const { innerWidth = 0, innerHeight = 0 } = window || {};
+  const ratio = getWidthToHeightRatio(innerWidth, innerHeight);
+  const scenario = getWidthCaseScenario(ratio);
+  const result = (value / DEFAULT_WIDTH) * 100;
+  switch (scenario) {
+    case WidthCaseScenario.Normal:
+      return `${result}vw`;
+    case WidthCaseScenario.DependentOnHeight:
+      return `${result * ASPECT_RATIO}vh`;
+  }
+};
+
+export const MARGIN = () => getVWString(597);
 export const BLUE = "#26BEFF";
 export const ZERO = 5;
 

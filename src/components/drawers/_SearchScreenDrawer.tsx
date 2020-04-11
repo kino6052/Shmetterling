@@ -10,7 +10,7 @@ import {
   RelatedArtistsSubject,
 } from "../../services/DataService";
 import { Route, RouteSubject } from "../../services/RouteService";
-import { getVW, useSharedState } from "../../utils/utils";
+import { getVWString, useSharedState } from "../../utils/utils";
 import { IListItem, ListContainerWrapper, ListItem } from "../List";
 import { Spacer } from "../Spacer";
 
@@ -28,26 +28,26 @@ const SearchScreenWrapper = styled.div<{ currentRoute: Route }>`
     display: flex;
     flex: 1;
     box-sizing: border-box;
-    margin: ${getVW(24)}vw;
+    margin: ${() => getVWString(24)};
     flex-direction: column;
     align-items: flex-start;
-    height: ${getVW(800)}vw;
+    height: ${() => getVWString(800)};
     
     h4 {
-      font-size: ${getVW(24)}vw;
+      font-size: ${() => getVWString(24)};
     }
 
     .arrow-back {
-      font-size: ${getVW(24)}vw;
+      font-size: ${() => getVWString(24)};
     }
 
     input {
-      font-size: ${getVW(120)}vw;
+      font-size: ${() => getVWString(120)};
       width: 100%;
       color: white;
       background: none;
       border: none;
-      // border-bottom: ${getVW(8)}vw solid white;
+      // border-bottom: ${() => getVWString(8)}vw solid white;
       &::placeholder {
         color: rgba(255, 255, 255, 0.5);
       }
@@ -60,7 +60,7 @@ const BandWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: ${getVW(500)}vw;
+  height: ${() => getVWString(500)};
 `;
 
 const BandPanelWrapper = styled.div`
@@ -68,7 +68,7 @@ const BandPanelWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   overflow: hidden;
-  margin-right: ${getVW(24)}vw;
+  margin-right: ${() => getVWString(24)};
   .progress {
     display: flex;
     width: 100%;
@@ -76,7 +76,7 @@ const BandPanelWrapper = styled.div`
     align-items: center;
     justify-content: center;
     svg {
-      height: ${getVW(100)}vw;
+      height: ${() => getVWString(100)};
     }
   }
 `;

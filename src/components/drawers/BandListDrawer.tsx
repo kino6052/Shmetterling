@@ -25,30 +25,30 @@ const BandListDrawerWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 56.25vw;
-  padding: ${getVWString(38)} ${getVWString(86)};
+  padding: ${() => getVWString(38)} ${() => getVWString(86)};
   box-sizing: border-box;
   h4 {
     margin: 0;
     font-weight: bold;
     color: white;
-    font-size: ${getVWString(24)};
-    line-height: ${getVWString(28)};
-    margin-bottom: ${getVWString(12)};
+    font-size: ${() => getVWString(24)};
+    line-height: ${() => getVWString(28)};
+    margin-bottom: ${() => getVWString(12)};
   }
   h1 {
     margin: 0;
     color: ${BLUE};
-    font-size: ${getVWString(48)};
-    line-height: ${getVWString(52)};
-    margin-bottom: ${getVWString(38)};
+    font-size: ${() => getVWString(48)};
+    line-height: ${() => getVWString(52)};
+    margin-bottom: ${() => getVWString(38)};
   }
   .full-screen {
     color: white;
-    height: ${getVWString(102)};
-    width: ${getVWString(102)};
+    height: ${() => getVWString(102)};
+    width: ${() => getVWString(102)};
     padding: 0;
     svg {
-      font-size: ${getVWString(102)};
+      font-size: ${() => getVWString(102)};
     }
   }
 `;
@@ -62,18 +62,17 @@ const TopWrapper = styled.div`
 
 export const AddButton = styled.button`
   box-sizing: border-box;
-  margin: 0 ${getVWString(16)} ${getVWString(8)} 0;
-  width: ${getVWString(501.97)};
-  height: ${getVWString(81.66)};
-  border: ${getVWString(2)} dashed white;
+  margin: 0 ${() => getVWString(16)} ${() => getVWString(8)} 0;
+  width: ${() => getVWString(501.97)};
+  height: ${() => getVWString(81.66)};
+  border: ${() => getVWString(2)} dashed white;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: transparent;
   background-blend-mode: overlay;
-  transition: 1s;
   &:hover {
-    transform: scale(1.1);
+    // transform: scale(1.1);
   }
   .content {
     display: flex;
@@ -81,30 +80,30 @@ export const AddButton = styled.button`
     justify-content: flex-start;
     align-items: center;
     .add {
-      margin-right: ${getVWString(8)};
+      margin-right: ${() => getVWString(8)};
       svg {
         color: white;
-        height: ${getVWString(18)};
-        width: ${getVWString(18)};
-        font-size: ${getVWString(18)};
+        height: ${() => getVWString(18)};
+        width: ${() => getVWString(18)};
+        font-size: ${() => getVWString(18)};
       }
     }
     h4 {
       margin: 0;
       color: white;
-      font-size: ${getVWString(18)};
-      line-height: ${getVWString(21)};
+      font-size: ${() => getVWString(18)};
+      line-height: ${() => getVWString(21)};
     }
     p {
       margin: 0;
       color: ${BLUE};
-      font-size: ${getVWString(12)};
-      line-height: ${getVWString(14)};
+      font-size: ${() => getVWString(12)};
+      line-height: ${() => getVWString(14)};
       font-weight: bold;
     }
   }
   .extra {
-    font-size: ${getVWString(16)}vw;
+    font-size: ${() => getVWString(16)};
   }
 `;
 
