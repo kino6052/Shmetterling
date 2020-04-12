@@ -2,6 +2,7 @@ import { ThemeProvider } from "@material-ui/core";
 import * as React from "react";
 import { Player } from "./components/Player";
 import "./services/IOService";
+import "./services/LocalStorageService";
 import { useYouTubeScript } from "./services/YouTubeService";
 import "./styles.css";
 import { theme } from "./utils/theme";
