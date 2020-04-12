@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ArtistSubject, InputSubject } from "../../services/DataService";
 import { SearchDrawer } from "../../services/DrawerService";
 import { getVWString, useSharedState } from "../../utils/utils";
-import { SearchResultListContainer } from "../List";
+import { SearchResultListContainer } from "../lists/SearchResultsList";
 import { Logo } from "../Logo";
 import { DrawerWrapper } from "./Drawer";
 import { Route } from "../../services/RouteService";

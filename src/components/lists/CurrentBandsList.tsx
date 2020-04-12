@@ -11,6 +11,8 @@ import { RouteSubject, Route } from "../../services/RouteService";
 import {
   SelectedArtistSubject,
   RemoveBandSubject,
+  MusicVideoSubject,
+  IArtist,
 } from "../../services/DataService";
 
 export const MenuSubject = new BehaviorSubject<unknown>(null);
@@ -74,25 +76,33 @@ export const _Menu: React.SFC = () => {
   );
 };
 
+const getDescriptionForBand = (band: IArtist) => {
+  const musicVideos = MusicVideoSubject.getValue();
+  const length = musicVideos.filter((mv) => mv.name === band.name).length;
+  return `${length} videos`;
+};
+
 export const ListContainer: React.SFC<{
   heading?: string;
   items: IListItem[];
 }> = (props) => {
   const { items = [], heading = "" } = props;
   return (
-    <ListContainerWrapper>
+    <ListContainerWrapper items={items}>
       {heading && <h4>{heading}</h4>}
+      <div className="container">
+        {items.map((band) => (
+          <ListItem band={band} description={getDescriptionForBand(band)}>
+            <Delete
+              onClick={(e) => {
+                MenuSubject.next(e);
+                SelectedArtistSubject.next(band.name);
+              }}
+            />
+          </ListItem>
+        ))}
+      </div>
       <_Menu />
-      {items.map((band) => (
-        <ListItem band={band} description="3 songs">
-          <Delete
-            onClick={(e) => {
-              MenuSubject.next(e);
-              SelectedArtistSubject.next(band.name);
-            }}
-          />
-        </ListItem>
-      ))}
     </ListContainerWrapper>
   );
 };

@@ -1,40 +1,45 @@
-import { Delete, Add } from "@material-ui/icons";
+import { Add } from "@material-ui/icons";
 import * as React from "react";
 import styled from "styled-components";
-import { RemoveBandSubject, AddBandSubject } from "../services/DataService";
+import { AddBandSubject } from "../services/DataService";
 import { BLUE, getVWString } from "../utils/utils";
-import { MenuSubject } from "./lists/CurrentBandsList";
-
-export const ListContainerWrapper = styled.div`
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  height: ${() => getVWString(274)};
-  overflow-y: scroll;
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-  &::-webkit-scrollbar {
-    width: ${() => getVWString(8)};
-    background-color: transparent;
-    border-radius: ${() => getVWString(100)};
-    border: 1px solid white;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: white;
-    border-radius: ${() => getVWString(100)};
-  }
-  h4 {
-    margin: 0;
-    margin-bottom: ${() => getVWString(24)};
-    text-align: left;
-  }
-`;
 
 export interface IListItem {
   name: string;
   id: string;
 }
+
+export const ListContainerWrapper = styled.div<{ items?: IListItem[] }>`
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  h4 {
+    margin: 0;
+    margin-bottom: ${() => getVWString(24)};
+    text-align: left;
+  }
+  .container {
+    height: ${() => getVWString(274)};
+    width: ${() => getVWString(512)};
+    overflow-y: ${({ items }) => {
+      if (items && items.length > 3) return "scroll";
+      return "hidden";
+    }};
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+    &::-webkit-scrollbar {
+      width: ${() => getVWString(8)};
+      background-color: transparent;
+      border-radius: ${() => getVWString(100)};
+      border: 1px solid white;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: white;
+      border-radius: ${() => getVWString(100)};
+    }
+  }
+`;
 
 export const ListItemWrapper = styled.div`
   box-sizing: border-box;
@@ -83,26 +88,5 @@ export const ListItem: React.SFC<{ band: IListItem; description: string }> = (
       </div>
       <div className="extra">{children}</div>
     </ListItemWrapper>
-  );
-};
-
-export const SearchResultListContainer: React.SFC<{
-  heading?: string;
-  items: IListItem[];
-}> = (props) => {
-  const { items = [], heading = "" } = props;
-  return (
-    <ListContainerWrapper>
-      {heading && <h4>{heading}</h4>}
-      {items.map((band) => (
-        <ListItem band={band} description="3 songs">
-          <Add
-            onClick={() => {
-              AddBandSubject.next(band);
-            }}
-          />
-        </ListItem>
-      ))}
-    </ListContainerWrapper>
   );
 };

@@ -3,7 +3,7 @@ import { IListItem, ListContainerWrapper, ListItem } from "../List";
 import { Add } from "@material-ui/icons";
 import { AddBandSubject } from "../../services/DataService";
 
-export const SimilarArtistsList: React.SFC<{
+export const SearchResultListContainer: React.SFC<{
   heading?: string;
   items: IListItem[];
 }> = (props) => {
@@ -15,7 +15,7 @@ export const SimilarArtistsList: React.SFC<{
         {items.map((band) => (
           <ListItem band={band} description="">
             <Add
-              onClick={(e) => {
+              onClick={() => {
                 AddBandSubject.next(band);
               }}
             />
