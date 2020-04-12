@@ -15,8 +15,8 @@ const LoaderWrapper = styled.div<{ isLoading: boolean }>`
   justify-content: center;
   .loader {
     z-index: 100;
-    height: ${() => getVWString(100)}vw!important;
-    width: ${() => getVWString(100)}vw!important;
+    height: ${() => getVWString(100)}!important;
+    width: ${() => getVWString(100)}!important;
     color: red;
     svg {
       height: ${() => getVWString(100)};

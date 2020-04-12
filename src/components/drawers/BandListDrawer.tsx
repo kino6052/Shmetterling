@@ -108,10 +108,26 @@ export const AddButton = styled.button`
 export const ControlWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  width: ${() => getVWString(487)};
+  // width: ${() => getVWString(487)};
   justify-content: space-between;
   .volume {
-    width: ${() => getVWString(190)};
+    display: flex;
+    align-items: center;
+    width: ${() => getVWString(487)};
+    .slider {
+      width: ${() => getVWString(190)};
+      .rail, .track {
+        height: ${() => getVWString(8)};
+        border-radius: ${() => getVWString(50)};
+      }
+      .thumb {
+        width: ${() => getVWString(23)};
+        height: ${() => getVWString(23)};
+      }
+    }
+    svg {
+      font-size: ${() => getVWString(102)};
+    }
   }
   .full-screen {
     color: white;
@@ -154,10 +170,15 @@ export const BandListDrawer: React.SFC = () => {
             <Grid item>
               <VolumeDown />
             </Grid>
-            <Grid item xs>
+            <Grid item classes={{ root: "slider" }}>
               <Slider
                 value={volume}
                 onChange={(_, v) => VolumeSubject.next(v as number)}
+                classes={{
+                  rail: "rail",
+                  track: "track",
+                  thumb: "thumb",
+                }}
                 aria-labelledby="continuous-slider"
               />
             </Grid>
