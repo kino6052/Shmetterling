@@ -46,8 +46,7 @@ export const __ShouldShowMenuSubject = combineLatest(
     filter(() => {
       const route = RouteSubject.getValue();
       return route === Route.Main;
-    }),
-    debounceTime(IDLE_DELAY)
+    })
   ),
   IsPlayingSubject,
   RouteSubject
@@ -101,6 +100,13 @@ export const setVolume = (volume: number) => {
 InitSubject.subscribe(() => {
   __ShouldShowMenuSubject.subscribe((shouldShowMenu) => {
     ShouldShowMenuSubject.next(shouldShowMenu);
+  });
+
+  IsIdleSubject.pipe(
+    filter((isIdle) => !isIdle),
+    debounceTime(IDLE_DELAY)
+  ).subscribe(() => {
+    IsIdleSubject.next(true);
   });
 
   PlayerErrorSubject.pipe(skip(1)).subscribe(() => {

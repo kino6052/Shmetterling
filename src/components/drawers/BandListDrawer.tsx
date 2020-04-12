@@ -118,7 +118,7 @@ export const ControlWrapper = styled.div`
       .thumb {
         width: ${() => getVWString(23)};
         height: ${() => getVWString(23)};
-        margin-top: ${() => getVWString(-6.8)}!important;
+        margin-top: ${() => getVWString(-7.5)}!important;
       }
     }
     svg {
