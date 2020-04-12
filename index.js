@@ -5,17 +5,15 @@ const { BehaviorSubject } = require("rxjs");
 
 const app = express();
 
-app.use("/", express.static("."));
+app.use("/", express.static("./build"));
 
-app.listen("8080", () => console.warn("App is listening"));
+app.listen(process.env.PORT || "8080", () => console.warn("App is listening"));
 
 const SPOTIFY_AUTH = `Basic ${btoa(
   "ca5e86225bcf4416b89dbf42fbc4e8a0:5894a1705f8046919e96c8130440ed80"
 )}`;
 
 const MUSIC_VIDEO_AUTH = "y261ObFJtcoav1XFteSZ1elCZfQeMwq1TBjH6enk";
-
-console.warn(SPOTIFY_AUTH);
 
 const AccessTokenSubject = new BehaviorSubject(undefined);
 
@@ -144,10 +142,6 @@ const getYouTubeUrlForVideo = async (videoId) => {
     artists: [{ name }],
     sources: [{ source_data }],
   } = response;
-  // const filtered = s
-  //   .filter(({ source }) => source === "youtube")
-  //   .map((source_data) => source_data);
-  // const songs = results.map(({ id, artists: [ { name, slug } ] }) => ({id, name, slug})).filter(({ name = "" }) => name.toLowerCase() === artistName.toLowerCase());
   return { id, song_title, name, source_data };
 };
 
@@ -164,22 +158,6 @@ const getMusicVideoId = (req) => {
 const getArtistName = (req) => {
   const { params: { name = "" } = {} } = req || {};
   return name;
-};
-
-const interlace = (original = [], related = []) => {
-  const result = [];
-  const rL = related.length;
-  const oL = original.length;
-  const ratio = Math.round(rL / oL);
-  result.push(original.pop());
-  related.forEach((r, i) => {
-    if (i % 4 === 0) {
-      const song = original.pop();
-      result.push(song);
-    }
-    result.push(r);
-  });
-  return result.filter((r) => !!r);
 };
 
 app.get("/artist/:name", async (req, res) => {
@@ -202,20 +180,3 @@ app.get("/link", async (req, res) => {
   const link = await getYouTubeUrlForVideo(musicVideoId);
   res.send(link);
 });
-
-// ca5e86225bcf4416b89dbf42fbc4e8a0
-// 5894a1705f8046919e96c8130440ed80
-
-// get related artists list
-// for each artist, get music videos that are on youtube
-
-/**
- * curl -X "GET" "https://api.spotify.com/v1/artists/7bu3H8JO7d0UbMoVzbo70s/related-artists" -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQBRVvxhUpd3--sezqOJOXT9sJsJenUV14bKnOvE8YJ_3cITe898KHdjFdIb4tg2vX37fySoTY5V3ct0L5yKbNx4nRwe7tEVvg1hMjJnUwEIndR5RvWQvBqsOn_4o_pRHfiYmiz9DKo"
-
-
-curl -X "GET" "https://api.spotify.com/v1/search?q=the%20cure&type=artist" -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQBRVvxhUpd3--sezqOJOXT9sJsJenUV14bKnOvE8YJ_3cITe898KHdjFdIb4tg2vX37fySoTY5V3ct0L5yKbNx4nRwe7tEVvg1hMjJnUwEIndR5RvWQvBqsOn_4o_pRHfiYmiz9DKo"
- 
- https://content.googleapis.com/youtube/v3/search?maxResults=25&part=snippet&q=surfing&key=AIzaSyAa8yy0GdcGPHdtD083HiGGx_S0vMPScDM
-
-fetch('https://imvdb.com/api/v1/search/videos?q=the+cure').then(res => res.json()).then(console.warn)
- */
