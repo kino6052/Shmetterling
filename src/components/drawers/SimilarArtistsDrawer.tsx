@@ -8,6 +8,7 @@ import { DrawerWrapper } from "./Drawer";
 import { Logo } from "../Logo";
 import { Route } from "../../services/RouteService";
 import { Controls } from "../Controls";
+import { IsPlayingSubject } from "../../services/PlayerService";
 
 const MainDrawerWrapper = styled.div`
   display: flex;
@@ -60,6 +61,7 @@ export const SimilarArtistsDrawer: React.SFC = () => {
   const [[selectedArtist, similarArtists]] = useSharedState(
     RelatedArtistsSubject
   );
+  const [isPlaying] = useSharedState(IsPlayingSubject);
   const [x] = useSharedState(SimilarBandsDrawer.position);
   return (
     <DrawerWrapper x={x} time={SimilarBandsDrawer.time}>
@@ -70,7 +72,7 @@ export const SimilarArtistsDrawer: React.SFC = () => {
           <h1>{selectedArtist}</h1>
         </CurrentBandWrapper>
         <SimilarArtistsList items={similarArtists} />
-        <Controls route={Route.Similar} />
+        <Controls route={Route.Similar} isPlaying={isPlaying} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );

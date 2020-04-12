@@ -22,7 +22,10 @@ import {
   VolumeSubject,
 } from "./YouTubeService";
 
-export const IsPlayingSubject = new BehaviorSubject<boolean>(true);
+export const IsPlayingSubject = new BehaviorSubject<boolean>(
+  true,
+  "IsPlayingSubject"
+);
 export const NextSongSubject = new Subject("NextSongSubject").pipe(
   throttleTime(DEFAULT_DELAY)
 ) as ISubject<unknown>;
@@ -104,7 +107,12 @@ InitSubject.subscribe(() => {
   PlayerStateChangeSubject.pipe(skip(1)).subscribe(({ e }) => {
     const { data } = e as { data: number };
     const hasEnded = data === 0;
-    if (hasEnded) NextSongSubject.next();
+    if (hasEnded) {
+      setTimeout(() => {
+        // For some reason player doesn't catch the events immediately
+        NextSongSubject.next();
+      }, DEFAULT_DELAY);
+    }
     const isLoading = ![0, 1, 2].includes(data);
     IsLoadingSubject.next(isLoading);
   });

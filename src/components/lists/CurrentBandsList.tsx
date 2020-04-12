@@ -1,19 +1,28 @@
-import * as React from "react";
-import styled from "styled-components";
-import { Menu, MenuItem, ListItemIcon, ListItemText } from "@material-ui/core";
-import { Send, Drafts, Delete, Search } from "@material-ui/icons";
-import { BehaviorSubject } from "rxjs";
-import { useSharedState } from "../../utils/utils";
-import { ShouldShowMenuSubject } from "../../services/PlayerService";
-import { ListContainerWrapper, IListItem, ListItem } from "../List";
-import { MouseCoordinateSubject } from "../../services/DOMService";
-import { RouteSubject, Route } from "../../services/RouteService";
 import {
-  SelectedArtistSubject,
-  RemoveBandSubject,
-  MusicVideoSubject,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  CircularProgress,
+} from "@material-ui/core";
+import { Delete, MoreVert, Search } from "@material-ui/icons";
+import * as React from "react";
+import { BehaviorSubject } from "rxjs";
+import {
   IArtist,
+  MusicVideoSubject,
+  RemoveBandSubject,
+  SelectedArtistSubject,
 } from "../../services/DataService";
+import { MouseCoordinateSubject } from "../../services/DOMService";
+import {
+  ShouldShowMenuSubject,
+  IsLoadingSubject,
+} from "../../services/PlayerService";
+import { Route, RouteSubject } from "../../services/RouteService";
+import { useSharedState } from "../../utils/utils";
+import { IListItem, ListContainerWrapper, ListItem } from "../List";
 
 export const MenuSubject = new BehaviorSubject<unknown>(null);
 export const CurrentCoordinateSubject = new BehaviorSubject<[number, number]>([
@@ -42,6 +51,7 @@ export const _Menu: React.SFC = () => {
       elevation={0}
       anchorPosition={{ top: y, left: x }}
       anchorReference={"anchorPosition"}
+      classes={{ paper: "menu-paper", list: "menu-list" }}
       open={isOpen}
       onClose={() => {
         setIsOpen(false);
@@ -87,18 +97,22 @@ export const ListContainer: React.SFC<{
   items: IListItem[];
 }> = (props) => {
   const { items = [], heading = "" } = props;
+  const [isLoading] = useSharedState(IsLoadingSubject);
   return (
     <ListContainerWrapper items={items}>
       {heading && <h4>{heading}</h4>}
       <div className="container">
         {items.map((band) => (
           <ListItem band={band} description={getDescriptionForBand(band)}>
-            <Delete
+            <IconButton
+              classes={{ root: "list-button" }}
               onClick={(e) => {
                 MenuSubject.next(e);
                 SelectedArtistSubject.next(band.name);
               }}
-            />
+            >
+              <MoreVert />
+            </IconButton>
           </ListItem>
         ))}
       </div>

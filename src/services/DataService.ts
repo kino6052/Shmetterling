@@ -60,7 +60,10 @@ export const MusicVideoSubject = new BehaviorSubject<IMusicVideo[]>(generate());
 export const MusicVideoIndexSubject = new BehaviorSubject<number>(
   Math.round(Math.random() * 100)
 );
-export const IsFetchingSubject = new BehaviorSubject<boolean>(false);
+export const IsFetchingSubject = new BehaviorSubject<boolean>(
+  false,
+  "IsFetching"
+);
 export const ErrorSubject = new Subject<string>();
 export const CurrentVideoSubject = new BehaviorSubject(DEFAULT_VIDEO);
 

@@ -31,8 +31,10 @@ const ControlsWrapper = styled.div`
   }
 `;
 
-export const Controls: React.SFC<{ route: Route }> = ({ route }) => {
-  const [isPlaying] = useSharedState(IsPlayingSubject);
+export const Controls: React.SFC<{ route: Route; isPlaying: boolean }> = ({
+  route,
+  isPlaying,
+}) => {
   const isMainRoute = route === Route.Main;
   return (
     <ControlsWrapper>
@@ -51,8 +53,7 @@ export const Controls: React.SFC<{ route: Route }> = ({ route }) => {
               IsPlayingSubject.next(!IsPlayingSubject.getValue());
             }}
           >
-            {!isPlaying && <PlayArrowOutlined />}
-            {isPlaying && <PauseOutlined />}
+            {isPlaying ? <PauseOutlined /> : <PlayArrowOutlined />}
           </IconButton>
           <IconButton classes={{ root: "icon" }}>
             <SkipNextOutlined

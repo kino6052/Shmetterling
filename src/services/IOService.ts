@@ -15,7 +15,7 @@ InitSubject.subscribe(() => {
     IsIdleSubject.next(false);
   });
 
-  window.addEventListener("keydown", () => {
+  window.addEventListener("keypress", () => {
     IsIdleSubject.next(false);
   });
 

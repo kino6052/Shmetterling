@@ -1,29 +1,23 @@
+import { Grid, IconButton, Slider } from "@material-ui/core";
+import {
+  AddOutlined,
+  FullscreenExitOutlined,
+  FullscreenOutlined,
+  VolumeDown,
+} from "@material-ui/icons";
 import * as React from "react";
-import { useSharedState, getVWString, BLUE } from "../../utils/utils";
-import { Spacer } from "../Spacer";
+import styled from "styled-components";
 import {
   CurrentVideoSubject,
   PlayListSubject,
 } from "../../services/DataService";
-import {
-  IsPlayingSubject,
-  FullScreenSubject,
-} from "../../services/PlayerService";
 import { CurrentPlaylistDrawer } from "../../services/DrawerService";
-import { DrawerWrapper } from "./Drawer";
-import { ListContainer } from "../lists/CurrentBandsList";
-import styled from "styled-components";
-import { IconButton, Grid, Slider } from "@material-ui/core";
-import {
-  FullscreenExitOutlined,
-  FullscreenOutlined,
-  AddOutlined,
-  VolumeDown,
-  VolumeUp,
-} from "@material-ui/icons";
-import { RouteSubject, Route } from "../../services/RouteService";
-import { _Menu } from "../lists/CurrentBandsList";
+import { FullScreenSubject } from "../../services/PlayerService";
+import { Route, RouteSubject } from "../../services/RouteService";
 import { VolumeSubject } from "../../services/YouTubeService";
+import { BLUE, getVWString, useSharedState } from "../../utils/utils";
+import { ListContainer } from "../lists/CurrentBandsList";
+import { DrawerWrapper } from "./Drawer";
 
 const BandListDrawerWrapper = styled.div`
   display: flex;
@@ -108,15 +102,16 @@ export const AddButton = styled.button`
 export const ControlWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  // width: ${() => getVWString(487)};
+  width: ${() => getVWString(512)};
   justify-content: space-between;
   .volume {
     display: flex;
     align-items: center;
-    width: ${() => getVWString(487)};
+    width: ${() => getVWString(350)};
     .slider {
       width: ${() => getVWString(190)};
-      .rail, .track {
+      .rail,
+      .track {
         height: ${() => getVWString(8)};
         border-radius: ${() => getVWString(50)};
       }

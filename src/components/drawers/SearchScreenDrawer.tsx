@@ -8,6 +8,7 @@ import { Logo } from "../Logo";
 import { DrawerWrapper } from "./Drawer";
 import { Route } from "../../services/RouteService";
 import { Controls } from "../Controls";
+import { IsPlayingSubject } from "../../services/PlayerService";
 
 const MainDrawerWrapper = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ const SearchWrapper = styled.div`
 export const SearchScreenDrawer: React.SFC = () => {
   const [artist] = useSharedState(ArtistSubject);
   const [x] = useSharedState(SearchDrawer.position);
+  const [isPlaying] = useSharedState(IsPlayingSubject);
   return (
     <DrawerWrapper x={x} time={SearchDrawer.time}>
       <MainDrawerWrapper>
@@ -57,7 +59,7 @@ export const SearchScreenDrawer: React.SFC = () => {
           />
         </SearchWrapper>
         <SearchResultListContainer heading="Search Results" items={artist} />
-        <Controls route={Route.Add} />
+        <Controls route={Route.Add} isPlaying={isPlaying} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );

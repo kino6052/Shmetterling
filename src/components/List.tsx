@@ -70,9 +70,26 @@ export const ListItemWrapper = styled.div`
       line-height: ${() => getVWString(14)};
       font-weight: bold;
     }
+    .loader {
+      z-index: 100;
+      height: ${() => getVWString(100)}!important;
+      width: ${() => getVWString(100)}!important;
+      color: red;
+      svg {
+        height: ${() => getVWString(100)};
+      }
+    }
   }
   .extra {
-    font-size: ${() => getVWString(16)};
+    .list-button {
+      color: white;
+      height: ${() => getVWString(20)};
+      width: ${() => getVWString(20)};
+      padding: 0;
+      svg {
+        font-size: ${() => getVWString(20)};
+      }
+    }
   }
 `;
 

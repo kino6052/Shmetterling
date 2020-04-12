@@ -2,12 +2,12 @@ import { IconButton } from "@material-ui/core";
 import { MusicVideo, ReplyOutlined } from "@material-ui/icons";
 import * as React from "react";
 import styled from "styled-components";
-import { ArtistSubject, InputSubject } from "../../services/DataService";
-import { SearchDrawer } from "../../services/DrawerService";
-import { Route, RouteSubject } from "../../services/RouteService";
-import { BLUE, getVWString, useSharedState } from "../../utils/utils";
-import { SearchResultListContainer } from "../List";
-import { DrawerWrapper } from "./Drawer";
+import { getVWString, useSharedState, BLUE } from "../utils/utils";
+import { ArtistSubject, InputSubject } from "../services/DataService";
+import { SearchDrawer } from "../services/DrawerService";
+import { DrawerWrapper } from "./drawers/Drawer";
+import { SearchResultListContainer } from "./lists/SearchResultsList";
+import { RouteSubject, Route } from "../services/RouteService";
 
 const MainDrawerWrapper = styled.div`
   display: flex;

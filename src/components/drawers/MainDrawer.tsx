@@ -1,26 +1,15 @@
 import { IconButton } from "@material-ui/core";
-import {
-  PauseOutlined,
-  PlayArrowOutlined,
-  SkipNextOutlined,
-  SkipPreviousOutlined,
-  ThumbDown,
-} from "@material-ui/icons";
+import { ThumbDown } from "@material-ui/icons";
 import * as React from "react";
 import styled from "styled-components";
 import { CurrentVideoSubject } from "../../services/DataService";
 import { MainDrawer as MainDrawerObject } from "../../services/DrawerService";
-import {
-  IsPlayingSubject,
-  NextSongSubject,
-  PrevSongSubject,
-  DislikeSubject,
-} from "../../services/PlayerService";
+import { DislikeSubject, IsPlayingSubject } from "../../services/PlayerService";
+import { Route } from "../../services/RouteService";
 import { BLUE, getVWString, useSharedState } from "../../utils/utils";
+import { Controls } from "../Controls";
 import { Logo } from "../Logo";
 import { DrawerWrapper } from "./Drawer";
-import { Controls } from "../Controls";
-import { Route } from "../../services/RouteService";
 
 const MainDrawerWrapper = styled.div`
   display: flex;
@@ -92,7 +81,7 @@ export const MainDrawer: React.SFC = () => {
             </IconButton>
           </h4>
         </CurrentBandWrapper>
-        <Controls route={Route.Main} />
+        <Controls route={Route.Main} isPlaying={isPlaying} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );
