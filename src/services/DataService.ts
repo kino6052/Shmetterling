@@ -57,7 +57,9 @@ export const RelatedArtistsSubject = new BehaviorSubject<[string, IArtist[]]>([
 ]);
 export const PlayListSubject = new BehaviorSubject<IArtist[]>([MR_OIZO]);
 export const MusicVideoSubject = new BehaviorSubject<IMusicVideo[]>(generate());
-export const MusicVideoIndexSubject = new BehaviorSubject<number>(0);
+export const MusicVideoIndexSubject = new BehaviorSubject<number>(
+  Math.round(Math.random() * 100)
+);
 export const IsFetchingSubject = new BehaviorSubject<boolean>(false);
 export const ErrorSubject = new Subject<string>();
 export const CurrentVideoSubject = new BehaviorSubject(DEFAULT_VIDEO);
@@ -164,7 +166,13 @@ InitSubject.subscribe(() => {
     removeCurrentVideo();
   });
 
-  RemoveBandSubject.subscribe((band) => {
+  RemoveBandSubject.subscribe(() => {
+    const artistName = SelectedArtistSubject.getValue();
+    if (!artistName) return;
+    const band = PlayListSubject.getValue().find(
+      (b) => b.name.toLowerCase() === artistName.toLowerCase()
+    );
+    if (!band) return;
     removeMusicVideosByBand(band);
     removeBand(band);
   });

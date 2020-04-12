@@ -6,6 +6,8 @@ import { getVWString, useSharedState } from "../../utils/utils";
 import { SearchResultListContainer } from "../List";
 import { Logo } from "../Logo";
 import { DrawerWrapper } from "./Drawer";
+import { Route } from "../../services/RouteService";
+import { Controls } from "../Controls";
 
 const MainDrawerWrapper = styled.div`
   display: flex;
@@ -55,6 +57,7 @@ export const SearchScreenDrawer: React.SFC = () => {
           />
         </SearchWrapper>
         <SearchResultListContainer heading="Search Results" items={artist} />
+        <Controls route={Route.Add} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );

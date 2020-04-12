@@ -7,6 +7,7 @@ import {
   NextSongSubject,
   PrevSongSubject,
   ShouldShowMenuSubject,
+  FullScreenSubject,
 } from "./PlayerService";
 
 InitSubject.subscribe(() => {
@@ -27,7 +28,7 @@ InitSubject.subscribe(() => {
   });
 
   Mousetrap.bind("f", function () {
-    openFullscreen();
+    FullScreenSubject.next(true);
   });
 
   Mousetrap.bind("left", function () {
@@ -35,8 +36,6 @@ InitSubject.subscribe(() => {
   });
 
   Mousetrap.bind(["esc", "escape"], function () {
-    closeFullscreen();
-    IsIdleSubject.next(true);
-    ShouldShowMenuSubject.next(false);
+    FullScreenSubject.next(false);
   });
 });

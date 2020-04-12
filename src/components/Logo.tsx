@@ -11,6 +11,7 @@ const LogoWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   width: ${() => getVWString(247)};
+  cursor: pointer;
   h4 {
     margin: 0;
     color: white;
@@ -35,14 +36,8 @@ const LogoWrapper = styled.div`
 `;
 
 export const Logo: React.SFC = () => (
-  <LogoWrapper>
+  <LogoWrapper onClick={() => RouteSubject.next(Route.Main)}>
     <MusicVideo classes={{ root: "logo-icon" }} />
     <h4 className="blue">Schmetterling</h4>
-    <IconButton
-      classes={{ root: "back" }}
-      onClick={() => RouteSubject.next(Route.Main)}
-    >
-      <ReplyOutlined />
-    </IconButton>
   </LogoWrapper>
 );

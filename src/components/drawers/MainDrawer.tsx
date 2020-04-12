@@ -19,6 +19,8 @@ import {
 import { BLUE, getVWString, useSharedState } from "../../utils/utils";
 import { Logo } from "../Logo";
 import { DrawerWrapper } from "./Drawer";
+import { Controls } from "../Controls";
+import { Route } from "../../services/RouteService";
 
 const MainDrawerWrapper = styled.div`
   display: flex;
@@ -29,21 +31,6 @@ const MainDrawerWrapper = styled.div`
   height: 56.25vw;
   padding: ${() => getVWString(38)} ${() => getVWString(86)};
   box-sizing: border-box;
-`;
-
-const ControlsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  .icon {
-    color: white;
-    height: ${() => getVWString(102)};
-    width: ${() => getVWString(102)};
-    padding: 0;
-    svg {
-      font-size: ${() => getVWString(102)};
-    }
-  }
 `;
 
 const CurrentBandWrapper = styled.div`
@@ -105,31 +92,7 @@ export const MainDrawer: React.SFC = () => {
             </IconButton>
           </h4>
         </CurrentBandWrapper>
-        <ControlsWrapper>
-          <IconButton classes={{ root: "icon" }} aria-label="Skip to Previous">
-            <SkipPreviousOutlined
-              onClick={() => {
-                PrevSongSubject.next();
-              }}
-            />
-          </IconButton>
-          <IconButton
-            classes={{ root: "icon" }}
-            onClick={() => {
-              IsPlayingSubject.next(!IsPlayingSubject.getValue());
-            }}
-          >
-            {!isPlaying && <PlayArrowOutlined />}
-            {isPlaying && <PauseOutlined />}
-          </IconButton>
-          <IconButton classes={{ root: "icon" }}>
-            <SkipNextOutlined
-              onClick={() => {
-                NextSongSubject.next();
-              }}
-            />
-          </IconButton>
-        </ControlsWrapper>
+        <Controls route={Route.Main} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );

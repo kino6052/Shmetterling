@@ -6,6 +6,8 @@ import { BLUE, getVWString, useSharedState } from "../../utils/utils";
 import { SimilarArtistsList } from "../lists/SimilarArtistsList";
 import { DrawerWrapper } from "./Drawer";
 import { Logo } from "../Logo";
+import { Route } from "../../services/RouteService";
+import { Controls } from "../Controls";
 
 const MainDrawerWrapper = styled.div`
   display: flex;
@@ -68,6 +70,7 @@ export const SimilarArtistsDrawer: React.SFC = () => {
           <h1>{selectedArtist}</h1>
         </CurrentBandWrapper>
         <SimilarArtistsList items={similarArtists} />
+        <Controls route={Route.Similar} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );

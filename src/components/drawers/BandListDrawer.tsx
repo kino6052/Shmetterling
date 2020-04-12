@@ -5,7 +5,10 @@ import {
   CurrentVideoSubject,
   PlayListSubject,
 } from "../../services/DataService";
-import { IsPlayingSubject } from "../../services/PlayerService";
+import {
+  IsPlayingSubject,
+  FullScreenSubject,
+} from "../../services/PlayerService";
 import { CurrentPlaylistDrawer } from "../../services/DrawerService";
 import { DrawerWrapper } from "./Drawer";
 import { ListContainer } from "../lists/CurrentBandsList";
@@ -126,6 +129,7 @@ export const BandListDrawer: React.SFC = () => {
   const [volume] = useSharedState(VolumeSubject);
   const [playList] = useSharedState(PlayListSubject);
   const [x] = useSharedState(CurrentPlaylistDrawer.position);
+  const [isFullScreen] = useSharedState(FullScreenSubject);
   const num = playList.length;
   return (
     <DrawerWrapper x={x} time={CurrentPlaylistDrawer.time}>
@@ -161,8 +165,10 @@ export const BandListDrawer: React.SFC = () => {
           <IconButton
             classes={{ root: "full-screen" }}
             aria-label="Full-screen"
+            onClick={() => FullScreenSubject.next(!isFullScreen)}
           >
-            <FullscreenOutlined />
+            {!isFullScreen && <FullscreenOutlined />}
+            {isFullScreen && <FullscreenExitOutlined />}
           </IconButton>
         </ControlWrapper>
       </BandListDrawerWrapper>

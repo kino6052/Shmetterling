@@ -1,7 +1,12 @@
 import { combineLatest, Subject as ISubject } from "rxjs";
 import { debounceTime, filter, map, skip, throttleTime } from "rxjs/operators";
 import { DEFAULT_DELAY, IDLE_DELAY } from "../constants";
-import { BehaviorSubject, Subject } from "../utils/utils";
+import {
+  BehaviorSubject,
+  Subject,
+  closeFullscreen,
+  openFullscreen,
+} from "../utils/utils";
 import {
   CurrentVideoSubject,
   ErrorSubject,
@@ -27,6 +32,7 @@ export const IsLoadingSubject = new BehaviorSubject<boolean>(true);
 export const IsIdleSubject = new BehaviorSubject<boolean>(true);
 export const ShouldShowMenuSubject = new BehaviorSubject(true);
 export const DislikeSubject = new Subject("Dislike");
+export const FullScreenSubject = new BehaviorSubject(false);
 
 export const __ShouldShowMenuSubject = combineLatest(
   IsIdleSubject,
@@ -123,6 +129,10 @@ InitSubject.subscribe(() => {
   DislikeSubject.subscribe(() => {
     removeCurrentVideo();
     NextSongSubject.next();
+  });
+
+  FullScreenSubject.pipe(skip(1)).subscribe((isFullScreen) => {
+    isFullScreen ? openFullscreen() : closeFullscreen();
   });
 
   NextSongSubject.next();

@@ -8,7 +8,10 @@ import { ShouldShowMenuSubject } from "../../services/PlayerService";
 import { ListContainerWrapper, IListItem, ListItem } from "../List";
 import { MouseCoordinateSubject } from "../../services/DOMService";
 import { RouteSubject, Route } from "../../services/RouteService";
-import { SelectedArtistSubject } from "../../services/DataService";
+import {
+  SelectedArtistSubject,
+  RemoveBandSubject,
+} from "../../services/DataService";
 
 export const MenuSubject = new BehaviorSubject<unknown>(null);
 export const CurrentCoordinateSubject = new BehaviorSubject<[number, number]>([
@@ -24,7 +27,7 @@ MenuSubject.subscribe((e) => {
 });
 
 export const _Menu: React.SFC = () => {
-  const [e] = useSharedState(MenuSubject);
+  const [e, setE] = useSharedState(MenuSubject);
   const [[x, y]] = useSharedState(CurrentCoordinateSubject);
   const [isOpen, setIsOpen] = React.useState(false);
   const [shouldShowMenu] = useSharedState(ShouldShowMenuSubject);
@@ -46,6 +49,8 @@ export const _Menu: React.SFC = () => {
       <MenuItem
         onClick={() => {
           RouteSubject.next(Route.Similar);
+          setE(null);
+          setIsOpen(false);
         }}
       >
         <ListItemIcon>
@@ -53,7 +58,13 @@ export const _Menu: React.SFC = () => {
         </ListItemIcon>
         <ListItemText primary="Find Similar Bands" />
       </MenuItem>
-      <MenuItem>
+      <MenuItem
+        onClick={() => {
+          RemoveBandSubject.next();
+          setE(null);
+          setIsOpen(false);
+        }}
+      >
         <ListItemIcon>
           <Delete fontSize="small" />
         </ListItemIcon>
