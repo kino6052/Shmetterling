@@ -7,10 +7,13 @@ interface IPlayer {
   loadVideoById: (id: string) => void;
   playVideo: () => void;
   pauseVideo: () => void;
+  setVolume: (volume: number) => void;
+  getVolume: () => number;
 }
 
 export const InitSubject = new Subject("InitSubject");
 export const TestSubject = new BehaviorSubject(null, "TestSubject");
+export const VolumeSubject = new BehaviorSubject<number>(100);
 export const PlayerRefSubject = new BehaviorSubject<IPlayer[]>(
   [],
   "PlayerRefSubject"

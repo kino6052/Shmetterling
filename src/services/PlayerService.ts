@@ -1,38 +1,32 @@
-import { skip, throttleTime, filter, debounceTime, map } from "rxjs/operators";
+import { combineLatest, Subject as ISubject } from "rxjs";
+import { debounceTime, filter, map, skip, throttleTime } from "rxjs/operators";
+import { DEFAULT_DELAY, IDLE_DELAY } from "../constants";
+import { BehaviorSubject, Subject } from "../utils/utils";
 import {
   CurrentVideoSubject,
-  ICurrentVideo,
-  InputSubject,
   ErrorSubject,
+  ICurrentVideo,
+  removeCurrentVideo,
 } from "./DataService";
+import { Route, RouteSubject } from "./RouteService";
 import {
   InitSubject,
   PlayerErrorSubject,
   PlayerRefSubject,
   PlayerStateChangeSubject,
+  VolumeSubject,
 } from "./YouTubeService";
-import { DEFAULT_DELAY, IDLE_DELAY } from "../constants";
-import { BehaviorSubject, Subject, debug } from "../utils/utils";
-import { Subject as ISubject, concat, forkJoin, combineLatest } from "rxjs";
-import { RouteSubject, Route } from "./RouteService";
 
-export const IsPlayingSubject = new BehaviorSubject<boolean>(
-  true,
-  "IsPlayingSubject"
-);
+export const IsPlayingSubject = new BehaviorSubject<boolean>(true);
 export const NextSongSubject = new Subject("NextSongSubject").pipe(
   throttleTime(DEFAULT_DELAY)
 ) as ISubject<unknown>;
 
 export const PrevSongSubject = new Subject("PrevSongSubject");
-
-export const IsLoadingSubject = new BehaviorSubject<boolean>(
-  true,
-  "IsLoadingSubject"
-);
+export const IsLoadingSubject = new BehaviorSubject<boolean>(true);
 export const IsIdleSubject = new BehaviorSubject<boolean>(true);
-
 export const ShouldShowMenuSubject = new BehaviorSubject(true);
+export const DislikeSubject = new Subject("Dislike");
 
 export const __ShouldShowMenuSubject = combineLatest(
   IsIdleSubject,
@@ -76,6 +70,15 @@ export const loadVideo = (currentVideo: ICurrentVideo) => {
   }
 };
 
+export const setVolume = (volume: number) => {
+  const [player] = PlayerRefSubject.getValue();
+  try {
+    player.setVolume(volume);
+  } catch (e) {
+    ErrorSubject.next(e.message);
+  }
+};
+
 InitSubject.subscribe(() => {
   __ShouldShowMenuSubject.subscribe((shouldShowMenu) => {
     ShouldShowMenuSubject.next(shouldShowMenu);
@@ -111,6 +114,15 @@ InitSubject.subscribe(() => {
 
   IsPlayingSubject.pipe(skip(1)).subscribe((isPlaying) => {
     isPlaying ? play() : pause();
+  });
+
+  VolumeSubject.pipe(skip(1)).subscribe((volume) => {
+    setVolume(volume);
+  });
+
+  DislikeSubject.subscribe(() => {
+    removeCurrentVideo();
+    NextSongSubject.next();
   });
 
   NextSongSubject.next();

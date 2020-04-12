@@ -130,7 +130,6 @@ export const removeMusicVideosByBand = (band: IArtist) => {
 
 export const removeMusicVideosById = (musicVideoId: string) => {
   const musicVideos = MusicVideoSubject.getValue();
-  console.warn();
   MusicVideoSubject.next(musicVideos.filter(({ id }) => id !== musicVideoId));
 };
 

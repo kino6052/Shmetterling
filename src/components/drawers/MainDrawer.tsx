@@ -14,6 +14,7 @@ import {
   IsPlayingSubject,
   NextSongSubject,
   PrevSongSubject,
+  DislikeSubject,
 } from "../../services/PlayerService";
 import { BLUE, getVWString, useSharedState } from "../../utils/utils";
 import { Logo } from "../Logo";
@@ -97,6 +98,7 @@ export const MainDrawer: React.SFC = () => {
             <IconButton
               classes={{ root: "dislike" }}
               color="primary"
+              onClick={() => DislikeSubject.next()}
               aria-label="Thumb Down"
             >
               <ThumbDown />

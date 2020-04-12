@@ -10,14 +10,17 @@ import { CurrentPlaylistDrawer } from "../../services/DrawerService";
 import { DrawerWrapper } from "./Drawer";
 import { ListContainer } from "../lists/CurrentBandsList";
 import styled from "styled-components";
-import { IconButton } from "@material-ui/core";
+import { IconButton, Grid, Slider } from "@material-ui/core";
 import {
   FullscreenExitOutlined,
   FullscreenOutlined,
   AddOutlined,
+  VolumeDown,
+  VolumeUp,
 } from "@material-ui/icons";
 import { RouteSubject, Route } from "../../services/RouteService";
 import { _Menu } from "../lists/CurrentBandsList";
+import { VolumeSubject } from "../../services/YouTubeService";
 
 const BandListDrawerWrapper = styled.div`
   display: flex;
@@ -42,15 +45,6 @@ const BandListDrawerWrapper = styled.div`
     font-size: ${() => getVWString(48)};
     line-height: ${() => getVWString(52)};
     margin-bottom: ${() => getVWString(38)};
-  }
-  .full-screen {
-    color: white;
-    height: ${() => getVWString(102)};
-    width: ${() => getVWString(102)};
-    padding: 0;
-    svg {
-      font-size: ${() => getVWString(102)};
-    }
   }
 `;
 
@@ -108,9 +102,28 @@ export const AddButton = styled.button`
   }
 `;
 
+export const ControlWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: ${() => getVWString(487)};
+  justify-content: space-between;
+  .volume {
+    width: ${() => getVWString(190)};
+  }
+  .full-screen {
+    color: white;
+    height: ${() => getVWString(102)};
+    width: ${() => getVWString(102)};
+    padding: 0;
+    svg {
+      font-size: ${() => getVWString(102)};
+    }
+  }
+`;
+
 export const BandListDrawer: React.SFC = () => {
   const [currentVideo] = useSharedState(CurrentVideoSubject);
-  const [isPlaying] = useSharedState(IsPlayingSubject);
+  const [volume] = useSharedState(VolumeSubject);
   const [playList] = useSharedState(PlayListSubject);
   const [x] = useSharedState(CurrentPlaylistDrawer.position);
   const num = playList.length;
@@ -132,9 +145,26 @@ export const BandListDrawer: React.SFC = () => {
           </div>
         </AddButton>
         <ListContainer items={playList} />
-        <IconButton classes={{ root: "full-screen" }} aria-label="Full-screen">
-          <FullscreenOutlined />
-        </IconButton>
+        <ControlWrapper>
+          <Grid container spacing={2} classes={{ root: "volume" }}>
+            <Grid item>
+              <VolumeDown />
+            </Grid>
+            <Grid item xs>
+              <Slider
+                value={volume}
+                onChange={(_, v) => VolumeSubject.next(v as number)}
+                aria-labelledby="continuous-slider"
+              />
+            </Grid>
+          </Grid>
+          <IconButton
+            classes={{ root: "full-screen" }}
+            aria-label="Full-screen"
+          >
+            <FullscreenOutlined />
+          </IconButton>
+        </ControlWrapper>
       </BandListDrawerWrapper>
     </DrawerWrapper>
   );
