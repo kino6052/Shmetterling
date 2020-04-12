@@ -30,6 +30,7 @@
   },
   "scripts": {
     "start": "node ./index.js",
+    "start:develop": "react-scripts start",
     "build": "react-scripts build"
   },
   "proxy": "http://localhost:8080",

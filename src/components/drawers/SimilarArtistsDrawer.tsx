@@ -72,7 +72,7 @@ export const SimilarArtistsDrawer: React.SFC = () => {
           <h1>{selectedArtist}</h1>
         </CurrentBandWrapper>
         <SimilarArtistsList items={similarArtists} />
-        <Controls route={Route.Similar} isPlaying={isPlaying} />
+        <Controls route={Route.Similar} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );

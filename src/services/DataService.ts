@@ -14,6 +14,7 @@ import {
 import { DEFAULT_DELAY } from "../constants";
 import { appendToSubjectValue } from "../utils/utils";
 import { RouteSubject, Route } from "./RouteService";
+import { GLOBAL } from "./DOMService";
 
 export interface IArtist {
   name: string;
@@ -66,6 +67,9 @@ export const IsFetchingSubject = new BehaviorSubject<boolean>(
 );
 export const ErrorSubject = new Subject<string>();
 export const CurrentVideoSubject = new BehaviorSubject(DEFAULT_VIDEO);
+
+// @ts-ignore
+GLOBAL.IsFetchingSubject = IsFetchingSubject;
 
 export const searchArtist = (query: string) => {
   ArtistSubject.next([]);

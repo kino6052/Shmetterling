@@ -5,13 +5,12 @@ import { CircularProgress } from "@material-ui/core";
 import { useSharedState } from "../../utils/utils";
 import { IListItem, ListContainerWrapper, ListItem } from "../List";
 
-export const SearchResultListContainer: React.SFC<{
+const __SearchResultListContainer: React.SFC<{
   heading?: string;
   items: IListItem[];
 }> = (props) => {
   const { items = [], heading = "" } = props;
   const [isLoading] = useSharedState(IsFetchingSubject);
-  console.warn("isLoading???", isLoading);
   return (
     <ListContainerWrapper items={items}>
       {heading && <h4>{heading}</h4>}
@@ -30,3 +29,7 @@ export const SearchResultListContainer: React.SFC<{
     </ListContainerWrapper>
   );
 };
+
+export const SearchResultListContainer = React.memo(
+  __SearchResultListContainer
+);

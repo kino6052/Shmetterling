@@ -31,9 +31,9 @@ const ControlsWrapper = styled.div`
   }
 `;
 
-export const Controls: React.SFC<{ route: Route; isPlaying: boolean }> = ({
+const __Controls: React.SFC<{ route: Route; isPlaying?: boolean }> = ({
   route,
-  isPlaying,
+  isPlaying = false,
 }) => {
   const isMainRoute = route === Route.Main;
   return (
@@ -76,3 +76,5 @@ export const Controls: React.SFC<{ route: Route; isPlaying: boolean }> = ({
     </ControlsWrapper>
   );
 };
+
+export const Controls = React.memo(__Controls);

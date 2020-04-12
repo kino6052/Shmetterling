@@ -30,3 +30,8 @@ window.addEventListener("mousemove", ({ clientX, clientY }) => {
 OnResizeSubject.pipe(distinctUntilChanged()).subscribe((scenario) => {
   WindowAspectRatioSubject.next(scenario);
 });
+
+export const GLOBAL = {};
+
+// @ts-ignore
+window.GLOBAL = GLOBAL;

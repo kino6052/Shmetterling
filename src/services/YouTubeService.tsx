@@ -57,7 +57,7 @@ const initPlayer = () => {
     playerVars: {
       autoplay: 1,
       controls: 0,
-      disablekb: 0,
+      disablekb: 1,
       rel: 0,
       fs: 0,
       modestbranding: 1,

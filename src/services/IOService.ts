@@ -35,7 +35,11 @@ InitSubject.subscribe(() => {
     PrevSongSubject.next();
   });
 
-  Mousetrap.bind(["esc", "escape"], function () {
-    FullScreenSubject.next(false);
-  });
+  Mousetrap.bind(
+    ["esc", "escape"],
+    function () {
+      FullScreenSubject.next(false);
+    },
+    "keyup"
+  );
 });

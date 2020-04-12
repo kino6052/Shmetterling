@@ -4,7 +4,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  CircularProgress,
 } from "@material-ui/core";
 import { Delete, MoreVert, Search } from "@material-ui/icons";
 import * as React from "react";
@@ -15,11 +14,7 @@ import {
   RemoveBandSubject,
   SelectedArtistSubject,
 } from "../../services/DataService";
-import { MouseCoordinateSubject } from "../../services/DOMService";
-import {
-  ShouldShowMenuSubject,
-  IsLoadingSubject,
-} from "../../services/PlayerService";
+import { ShouldShowMenuSubject } from "../../services/PlayerService";
 import { Route, RouteSubject } from "../../services/RouteService";
 import { useSharedState } from "../../utils/utils";
 import { IListItem, ListContainerWrapper, ListItem } from "../List";
@@ -32,14 +27,13 @@ export const CurrentCoordinateSubject = new BehaviorSubject<[number, number]>([
 
 MenuSubject.subscribe((e) => {
   // @ts-ignore
-  if (!e || !e.currentTarget) return;
-  const [x, y] = MouseCoordinateSubject.getValue();
-  CurrentCoordinateSubject.next([x, y]);
+  // if (!e || !e.currentTarget) return;
+  // const [x, y] = MouseCoordinateSubject.getValue();
+  // CurrentCoordinateSubject.next([x, y]);
 });
 
 export const _Menu: React.SFC = () => {
   const [e, setE] = useSharedState(MenuSubject);
-  const [[x, y]] = useSharedState(CurrentCoordinateSubject);
   const [isOpen, setIsOpen] = React.useState(false);
   const [shouldShowMenu] = useSharedState(ShouldShowMenuSubject);
   // @ts-ignore
@@ -49,7 +43,6 @@ export const _Menu: React.SFC = () => {
   return (
     <Menu
       elevation={0}
-      anchorPosition={{ top: y, left: x }}
       anchorReference={"anchorPosition"}
       classes={{ paper: "menu-paper", list: "menu-list" }}
       open={isOpen}
@@ -97,7 +90,6 @@ export const ListContainer: React.SFC<{
   items: IListItem[];
 }> = (props) => {
   const { items = [], heading = "" } = props;
-  const [isLoading] = useSharedState(IsLoadingSubject);
   return (
     <ListContainerWrapper items={items}>
       {heading && <h4>{heading}</h4>}

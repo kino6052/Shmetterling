@@ -21,6 +21,7 @@ import {
   PlayerStateChangeSubject,
   VolumeSubject,
 } from "./YouTubeService";
+import { GLOBAL } from "./DOMService";
 
 export const IsPlayingSubject = new BehaviorSubject<boolean>(
   true,
@@ -37,8 +38,17 @@ export const ShouldShowMenuSubject = new BehaviorSubject(true);
 export const DislikeSubject = new Subject("Dislike");
 export const FullScreenSubject = new BehaviorSubject(false);
 
+// @ts-ignore
+GLOBAL.FullScreenSubject = FullScreenSubject;
+
 export const __ShouldShowMenuSubject = combineLatest(
-  IsIdleSubject,
+  IsIdleSubject.pipe(
+    filter(() => {
+      const route = RouteSubject.getValue();
+      return route === Route.Main;
+    }),
+    debounceTime(IDLE_DELAY)
+  ),
   IsPlayingSubject,
   RouteSubject
 ).pipe(
@@ -91,13 +101,6 @@ export const setVolume = (volume: number) => {
 InitSubject.subscribe(() => {
   __ShouldShowMenuSubject.subscribe((shouldShowMenu) => {
     ShouldShowMenuSubject.next(shouldShowMenu);
-  });
-
-  IsIdleSubject.pipe(
-    filter((isIdle) => !isIdle),
-    debounceTime(IDLE_DELAY)
-  ).subscribe(() => {
-    IsIdleSubject.next(true);
   });
 
   PlayerErrorSubject.pipe(skip(1)).subscribe(() => {

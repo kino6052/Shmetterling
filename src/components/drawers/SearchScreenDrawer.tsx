@@ -47,7 +47,6 @@ const SearchWrapper = styled.div`
 export const SearchScreenDrawer: React.SFC = () => {
   const [artist] = useSharedState(ArtistSubject);
   const [x] = useSharedState(SearchDrawer.position);
-  const [isPlaying] = useSharedState(IsPlayingSubject);
   return (
     <DrawerWrapper x={x} time={SearchDrawer.time}>
       <MainDrawerWrapper>
@@ -59,7 +58,7 @@ export const SearchScreenDrawer: React.SFC = () => {
           />
         </SearchWrapper>
         <SearchResultListContainer heading="Search Results" items={artist} />
-        <Controls route={Route.Add} isPlaying={isPlaying} />
+        <Controls route={Route.Add} />
       </MainDrawerWrapper>
     </DrawerWrapper>
   );
