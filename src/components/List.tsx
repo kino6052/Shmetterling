@@ -43,7 +43,7 @@ export const ListContainerWrapper = styled.div<{ items?: IListItem[] }>`
 
 export const ListItemWrapper = styled.div`
   box-sizing: border-box;
-  margin: 0 ${() => getVWString(8)}vw ${() => getVWString(8)}vw 0;
+  margin: 0 ${() => getVWString(8)} ${() => getVWString(8)} 0;
   width: ${() => getVWString(501.97)};
   height: ${() => getVWString(81.66)};
   padding: ${() => getVWString(23)};
