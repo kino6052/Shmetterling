@@ -13,6 +13,8 @@ import {
   IsPlayingSubject,
   PrevSongSubject,
   NextSongSubject,
+  PauseSubject,
+  PlaySubject,
 } from "../services/PlayerService";
 import { RouteSubject, Route } from "../services/RouteService";
 
@@ -50,7 +52,11 @@ const __Controls: React.SFC<{ route: Route; isPlaying?: boolean }> = ({
           <IconButton
             classes={{ root: "icon" }}
             onClick={() => {
-              IsPlayingSubject.next(!IsPlayingSubject.getValue());
+              if (isPlaying) {
+                PauseSubject.next();
+              } else {
+                PlaySubject.next();
+              }
             }}
           >
             {isPlaying ? <PauseOutlined /> : <PlayArrowOutlined />}
@@ -77,4 +83,4 @@ const __Controls: React.SFC<{ route: Route; isPlaying?: boolean }> = ({
   );
 };
 
-export const Controls = React.memo(__Controls);
+export const Controls = __Controls;

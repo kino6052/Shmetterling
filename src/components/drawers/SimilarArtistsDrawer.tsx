@@ -2,13 +2,12 @@ import * as React from "react";
 import styled from "styled-components";
 import { RelatedArtistsSubject } from "../../services/DataService";
 import { SimilarBandsDrawer } from "../../services/DrawerService";
-import { BLUE, getVWString, useSharedState } from "../../utils/utils";
-import { SimilarArtistsList } from "../lists/SimilarArtistsList";
-import { DrawerWrapper } from "./Drawer";
-import { Logo } from "../Logo";
 import { Route } from "../../services/RouteService";
+import { BLUE, getVWString, useSharedState } from "../../utils/utils";
 import { Controls } from "../Controls";
-import { IsPlayingSubject } from "../../services/PlayerService";
+import { SimilarArtistsList } from "../lists/SimilarArtistsList";
+import { Logo } from "../Logo";
+import { DrawerWrapper } from "./Drawer";
 
 const MainDrawerWrapper = styled.div`
   display: flex;
@@ -61,7 +60,6 @@ export const SimilarArtistsDrawer: React.SFC = () => {
   const [[selectedArtist, similarArtists]] = useSharedState(
     RelatedArtistsSubject
   );
-  const [isPlaying] = useSharedState(IsPlayingSubject);
   const [x] = useSharedState(SimilarBandsDrawer.position);
   return (
     <DrawerWrapper x={x} time={SimilarBandsDrawer.time}>

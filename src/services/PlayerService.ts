@@ -1,5 +1,12 @@
 import { combineLatest, Subject as ISubject } from "rxjs";
-import { debounceTime, filter, map, skip, throttleTime } from "rxjs/operators";
+import {
+  debounceTime,
+  filter,
+  map,
+  skip,
+  throttleTime,
+  repeat,
+} from "rxjs/operators";
 import { DEFAULT_DELAY, IDLE_DELAY } from "../constants";
 import {
   BehaviorSubject,
@@ -27,6 +34,8 @@ export const IsPlayingSubject = new BehaviorSubject<boolean>(
   true,
   "IsPlayingSubject"
 );
+export const PlaySubject = new Subject("PlaySubject");
+export const PauseSubject = new Subject("PauseSubject");
 export const NextSongSubject = new Subject("NextSongSubject").pipe(
   throttleTime(DEFAULT_DELAY)
 ) as ISubject<unknown>;
@@ -121,12 +130,9 @@ InitSubject.subscribe(() => {
   PlayerStateChangeSubject.pipe(skip(1)).subscribe(({ e }) => {
     const { data } = e as { data: number };
     const hasEnded = data === 0;
-    if (hasEnded) {
-      setTimeout(() => {
-        // For some reason player doesn't catch the events immediately
-        NextSongSubject.next();
-      }, DEFAULT_DELAY);
-    }
+    const isPlaying = data === 1;
+    if (hasEnded) NextSongSubject.next();
+    IsPlayingSubject.next(isPlaying);
     const isLoading = ![0, 1, 2].includes(data);
     IsLoadingSubject.next(isLoading);
   });
@@ -137,12 +143,16 @@ InitSubject.subscribe(() => {
   });
 
   NextSongSubject.subscribe(() => {
-    IsPlayingSubject.next(true);
+    PlaySubject.next();
   });
 
-  IsPlayingSubject.pipe(skip(1)).subscribe((isPlaying) => {
-    isPlaying ? play() : pause();
-  });
+  // IsPlayingSubject.pipe(skip(1)).subscribe((isPlaying) => {
+  //   isPlaying ? play() : pause();
+  // });
+
+  PlaySubject.subscribe(() => play());
+
+  PauseSubject.subscribe(() => pause());
 
   VolumeSubject.pipe(skip(1)).subscribe((volume) => {
     setVolume(volume);

@@ -60,7 +60,7 @@ export const useSharedState = <T>(
   useEffect(() => {
     const sub = subject.pipe(skip(1)).subscribe((s) => setState(s));
     return () => sub.unsubscribe();
-  });
+  }, []);
   const newSetState = (state: T) => subject.next(state);
   // @ts-ignore
   return [value, newSetState];

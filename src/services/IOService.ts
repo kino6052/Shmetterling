@@ -4,6 +4,10 @@ import {
   IsIdleSubject,
   NextSongSubject,
   PrevSongSubject,
+  toggleIsPlaying,
+  IsPlayingSubject,
+  PauseSubject,
+  PlaySubject,
 } from "./PlayerService";
 import { InitSubject } from "./YouTubeService";
 
@@ -14,6 +18,11 @@ InitSubject.subscribe(() => {
 
   window.addEventListener("keypress", () => {
     IsIdleSubject.next(false);
+  });
+
+  Mousetrap.bind(["space", "spacebar"], () => {
+    const isPlaying = IsPlayingSubject.getValue();
+    isPlaying ? PauseSubject.next() : PlaySubject.next();
   });
 
   Mousetrap.bind("right", function () {
