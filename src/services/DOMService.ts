@@ -5,6 +5,7 @@ import {
   Subject,
 } from "../utils/utils";
 import { distinctUntilChanged } from "rxjs/operators";
+import { FullScreenSubject, toggleFullScreen } from "./PlayerService";
 
 const DEFAULT_SCENARIO = getDefaultCaseScenario();
 
@@ -25,6 +26,11 @@ window.addEventListener("resize", () => {
 
 window.addEventListener("mousemove", ({ clientX, clientY }) => {
   MouseCoordinateSubject.next([clientX, clientY]);
+});
+
+window.addEventListener("fullscreenchange", () => {
+  const isFullScreen = document.fullscreen;
+  FullScreenSubject.next(isFullScreen);
 });
 
 OnResizeSubject.pipe(distinctUntilChanged()).subscribe((scenario) => {

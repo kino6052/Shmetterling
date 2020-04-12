@@ -97,6 +97,11 @@ export const setVolume = (volume: number) => {
   }
 };
 
+export const toggleFullScreen = () => {
+  const isFullScreen = FullScreenSubject.getValue();
+  FullScreenSubject.next(!isFullScreen);
+};
+
 InitSubject.subscribe(() => {
   __ShouldShowMenuSubject.subscribe((shouldShowMenu) => {
     ShouldShowMenuSubject.next(shouldShowMenu);

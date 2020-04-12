@@ -1,14 +1,11 @@
 import Mousetrap from "mousetrap";
-import { openFullscreen, closeFullscreen } from "../utils/utils";
-import { InitSubject } from "./YouTubeService";
 import {
+  FullScreenSubject,
   IsIdleSubject,
-  toggleIsPlaying,
   NextSongSubject,
   PrevSongSubject,
-  ShouldShowMenuSubject,
-  FullScreenSubject,
 } from "./PlayerService";
+import { InitSubject } from "./YouTubeService";
 
 InitSubject.subscribe(() => {
   window.addEventListener("mousemove", () => {
@@ -17,10 +14,6 @@ InitSubject.subscribe(() => {
 
   window.addEventListener("keypress", () => {
     IsIdleSubject.next(false);
-  });
-
-  Mousetrap.bind("space", function () {
-    toggleIsPlaying();
   });
 
   Mousetrap.bind("right", function () {
@@ -34,12 +27,4 @@ InitSubject.subscribe(() => {
   Mousetrap.bind("left", function () {
     PrevSongSubject.next();
   });
-
-  Mousetrap.bind(
-    ["esc", "escape"],
-    function () {
-      FullScreenSubject.next(false);
-    },
-    "keyup"
-  );
 });
