@@ -11,6 +11,7 @@ import { skip } from "rxjs/operators";
 export enum LocalStorageKey {
   Playlist = "Playlist",
   MusicVideos = "MusicVideos",
+  AreCookiesAccepted = "AreCookiesAccepted",
 }
 
 const getFromLocalStorageByKey = <T>(key: LocalStorageKey): T[] => {
@@ -45,6 +46,14 @@ export const savePlaylistToStorage = (playlist: IArtist[]) => {
 
 export const saveMusicVideosToStorage = (musicVideos: IMusicVideo[]) => {
   saveToLocalStorageByKey(LocalStorageKey.MusicVideos, musicVideos);
+};
+
+export const getAreCookiesAccepted = (): boolean[] => {
+  return getFromLocalStorageByKey(LocalStorageKey.AreCookiesAccepted);
+};
+
+export const saveAreCookiesAccepted = (value: boolean[]) => {
+  saveToLocalStorageByKey(LocalStorageKey.AreCookiesAccepted, value);
 };
 
 export const initializePlaylist = () => {

@@ -10,6 +10,7 @@ import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import { useSharedState } from "./utils/utils";
 import { WindowAspectRatioSubject } from "./services/DOMService";
 import { Snackbar } from "./components/Snackbar";
+import { ConsentModal } from "./components/ConsentModal";
 
 export default function App() {
   useYouTubeScript();
@@ -19,6 +20,7 @@ export default function App() {
       <StyledThemeProvider theme={{ scenario }}>
         <ThemeProvider theme={theme}>
           <Player />
+          <ConsentModal />
           <Snackbar />
         </ThemeProvider>
       </StyledThemeProvider>
