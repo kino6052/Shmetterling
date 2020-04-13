@@ -7,4 +7,11 @@ export const theme = createMuiTheme({
       main: BLUE,
     },
   },
+  props: {
+    MuiButtonBase: {
+      TouchRippleProps: {
+        classes: { root: "ripple" },
+      },
+    },
+  },
 });

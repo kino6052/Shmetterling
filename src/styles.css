@@ -17,3 +17,7 @@ body {
   height: 100vh;
   background: gray;
 }
+
+.ripple {
+  color: white;
+}

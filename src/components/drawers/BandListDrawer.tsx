@@ -1,4 +1,4 @@
-import { Grid, IconButton, Slider } from "@material-ui/core";
+import { Grid, IconButton, Slider, Button } from "@material-ui/core";
 import {
   AddOutlined,
   FullscreenExitOutlined,
@@ -71,6 +71,9 @@ export const AddButton = styled.button`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    width: 100%;
+    height: ${() => getVWString(70)};
+    border: none;
     .add {
       margin-right: ${() => getVWString(8)};
       svg {
@@ -137,7 +140,6 @@ export const ControlWrapper = styled.div`
 `;
 
 export const BandListDrawer: React.SFC = () => {
-  const [currentVideo] = useSharedState(CurrentVideoSubject);
   const [volume] = useSharedState(VolumeSubject);
   const [playList] = useSharedState(PlayListSubject);
   const [x] = useSharedState(CurrentPlaylistDrawer.position);
@@ -153,12 +155,9 @@ export const BandListDrawer: React.SFC = () => {
           </h1>
         </TopWrapper>
         <AddButton onClick={() => RouteSubject.next(Route.Add)}>
-          <div className="content">
-            <IconButton className="add">
-              <AddOutlined />
-            </IconButton>
+          <Button variant="outlined" classes={{ root: "content" }}>
             <h4>Add Band</h4>
-          </div>
+          </Button>
         </AddButton>
         <ListContainer items={playList} />
         <ControlWrapper>
