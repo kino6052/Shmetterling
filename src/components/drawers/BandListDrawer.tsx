@@ -54,7 +54,7 @@ const TopWrapper = styled.div`
 
 export const AddButton = styled.button`
   box-sizing: border-box;
-  margin: 0 ${() => getVWString(16)} ${() => getVWString(8)} 0;
+  margin: 0 ${() => getVWString(8)} ${() => getVWString(8)} 0;
   width: ${() => getVWString(501.97)};
   height: ${() => getVWString(81.66)};
   border: ${() => getVWString(2)} dashed white;
