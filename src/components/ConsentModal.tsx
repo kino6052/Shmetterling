@@ -15,6 +15,7 @@ export const ConsentModal: React.SFC = () => {
     <__Snackbar
       message={MESSAGE}
       open={!areCookiesAccepted}
+      classes={{ root: "consent-modal" }}
       action={
         <Button
           color="primary"
