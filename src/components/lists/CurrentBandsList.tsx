@@ -13,6 +13,7 @@ import {
   MusicVideoSubject,
   RemoveBandSubject,
   SelectedArtistSubject,
+  IMusicVideo,
 } from "../../services/DataService";
 import { ShouldShowMenuSubject } from "../../services/PlayerService";
 import { Route, RouteSubject } from "../../services/RouteService";
@@ -75,9 +76,10 @@ export const _Menu: React.SFC = () => {
   );
 };
 
-const getDescriptionForBand = (band: IArtist) => {
-  const musicVideos = MusicVideoSubject.getValue();
-  const length = musicVideos.filter((mv) => mv.name === band.name).length;
+const getDescriptionForBand = (band: IArtist, musicVideos: IMusicVideo[]) => {
+  const length = musicVideos.filter(
+    (mv) => mv.name.toLowerCase() === band.name.toLowerCase()
+  ).length;
   return `${length} videos`;
 };
 
@@ -86,12 +88,16 @@ export const ListContainer: React.SFC<{
   items: IListItem[];
 }> = (props) => {
   const { items = [], heading = "" } = props;
+  const [musicVideos] = useSharedState(MusicVideoSubject);
   return (
     <ListContainerWrapper items={items}>
       {heading && <h4>{heading}</h4>}
       <div className="container">
         {items.map((band) => (
-          <ListItem band={band} description={getDescriptionForBand(band)}>
+          <ListItem
+            band={band}
+            description={getDescriptionForBand(band, musicVideos)}
+          >
             <IconButton
               classes={{ root: "list-button" }}
               onClick={(e) => {
