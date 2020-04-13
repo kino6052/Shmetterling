@@ -145,8 +145,8 @@ InitSubject.subscribe(() => {
   NextSongSubject.subscribe(() => {
     PlaySubject.next();
     setTimeout(() => {
-      const isPlaying = IsPlayingSubject.getValue();
-      if (!isPlaying) NextSongSubject.next();
+      const isLoading = IsLoadingSubject.getValue();
+      if (isLoading) NextSongSubject.next();
     }, DEFAULT_DELAY * 3); // TODO: Think of a better way of avoiding songs that take forever to load
   });
 

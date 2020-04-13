@@ -65,7 +65,7 @@ export const IsFetchingSubject = new BehaviorSubject<boolean>(
   false,
   "IsFetching"
 );
-export const ErrorSubject = new Subject<string>();
+export const ErrorSubject = new BehaviorSubject<string>("");
 export const CurrentVideoSubject = new BehaviorSubject(DEFAULT_VIDEO);
 
 // @ts-ignore
@@ -165,8 +165,8 @@ InitSubject.subscribe(() => {
     if (bands.map((b) => b.id).includes(band.id)) return;
     appendToSubjectValue(PlayListSubject, [band]);
     const musicVideos = await getMusicVideos(band);
-    console.warn(musicVideos);
     addMusicVideos(musicVideos);
+    ErrorSubject.next("Band is added to the playlist");
   });
 
   PlayerErrorSubject.pipe(skip(1)).subscribe(() => {

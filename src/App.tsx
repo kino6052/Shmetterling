@@ -9,6 +9,7 @@ import { theme } from "./utils/theme";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import { useSharedState } from "./utils/utils";
 import { WindowAspectRatioSubject } from "./services/DOMService";
+import { Snackbar } from "./components/Snackbar";
 
 export default function App() {
   useYouTubeScript();
@@ -18,6 +19,7 @@ export default function App() {
       <StyledThemeProvider theme={{ scenario }}>
         <ThemeProvider theme={theme}>
           <Player />
+          <Snackbar />
         </ThemeProvider>
       </StyledThemeProvider>
     </div>
