@@ -4,8 +4,14 @@ import {
   WidthCaseScenario,
   Subject,
 } from "../utils/utils";
-import { distinctUntilChanged } from "rxjs/operators";
-import { FullScreenSubject, toggleFullScreen } from "./PlayerService";
+import { distinctUntilChanged, skip } from "rxjs/operators";
+import {
+  FullScreenSubject,
+  toggleFullScreen,
+  ShouldShowMenuSubject,
+} from "./PlayerService";
+import { InitSubject } from "./YouTubeService";
+import { ErrorSubject } from "./DataService";
 
 const DEFAULT_SCENARIO = getDefaultCaseScenario();
 
@@ -41,3 +47,14 @@ export const GLOBAL = {};
 
 // @ts-ignore
 window.GLOBAL = GLOBAL;
+
+InitSubject.subscribe(() => {
+  ShouldShowMenuSubject.pipe(skip(1)).subscribe((shouldShowMenu) => {
+    const cursor = shouldShowMenu ? "auto" : "none";
+    try {
+      document.body.style.cursor = cursor;
+    } catch (e) {
+      ErrorSubject.next(e.message);
+    }
+  });
+});
