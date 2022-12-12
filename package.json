@@ -18,7 +18,7 @@
   "homepage": "https://github.com/kino6052/Shmetterling#readme",
   "dependencies": {
     "btoa": "^1.2.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "node-fetch": "^2.6.0",
     "rxjs": "^6.5.4"
   }
