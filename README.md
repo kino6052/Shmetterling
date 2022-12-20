@@ -1,2 +1,2 @@
 # Shmetterling
-YouTube meets Spotify
+YouTube meets Spotify.
